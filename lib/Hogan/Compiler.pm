@@ -1,5 +1,7 @@
 package Hogan::Compiler;
 
+use Hogan::Template;
+
 use strict;
 use warnings;
 
@@ -338,7 +340,7 @@ sub make_template {
         my ($c, $p, $i) = @_;
         wrap_main($code_obj->{'code'});
     };
-    return template($template, $text, $self, $options);
+    return Hogan::Template->new($template, $text, $self, $options);
 }
 
 sub make_partials {
