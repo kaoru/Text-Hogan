@@ -13,8 +13,8 @@ my $r_slash         = qr/\\/;
 
 my $linesep         = "\u{2028}";
 my $paragraphsep    = "\u{2029}";
-my $r_linesep       = qr/$linesep/;
-my $r_paragraphsep  = qr/$paragraphsep/;
+my $r_linesep       = qr/\Q$linesep\E/;
+my $r_paragraphsep  = qr/\Q$paragraphsep\E/;
 
 my %tags = (
     '#' => 1, '^' => 2, '<' => 3, '$' => 4,
@@ -328,8 +328,6 @@ sub wrap_main {
     my ($code) = @_;
     return qq{var t=this;t.b(i=i||"");${code}return t.fl();};
 }
-
-my $template = Hogan::Template->new();
 
 sub make_template {
     my $self = shift;
