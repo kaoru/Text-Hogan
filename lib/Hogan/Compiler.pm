@@ -126,18 +126,18 @@ sub scan {
                 $state = $IN_TAG_TYPE;
             }
             else {
-                if (substr($text, $i, 1) eq "\n") {
+                if (char_at($text, $i) eq "\n") {
                     $filter_line->($seen_tag);
                 }
                 else {
-                    $buf .= substr($text, $i, 1);
+                    $buf .= char_at($text, $i);
                 }
             }
         }
         elsif ($state eq $IN_TAG_TYPE) {
             $i += length($otag) - 1;
-            $tag = $tags{substr($text,$i+1,1)};
-            $tag_type = $tag ? substr($text,$i+1,1) : '_v';
+            $tag = $tags{char_at($text,$i + 1)};
+            $tag_type = $tag ? char_at($text, $i + 1) : '_v';
             if ($tag_type eq '=') {
                 $i = $change_delimiters->($text, $i);
                 $state = $IN_TEXT;
@@ -171,7 +171,7 @@ sub scan {
                     }
                 }
                 else {
-                    $buf .= substr($text, $i, 1);
+                    $buf .= char_at($text, $i);
                 }
             }
         }
@@ -195,12 +195,12 @@ sub clean_triple_stache {
 sub tag_change {
     my ($tag, $text, $index) = @_;
 
-    if (substr($text, $index, 1) ne substr($tag, 0, 1)) {
+    if (char_at($text, $index) ne char_at($tag, 0)) {
         return false;
     }
 
     for (my $i = 1, my $l = length($tag); $i < $l; $i++) {
-        if (substr($text, $index + $i, 1) ne substr($tag, $i, 1)) {
+        if (char_at($text, $index + $i) ne char_at($tag, $i)) {
             return false;
         }
     }
@@ -386,6 +386,11 @@ sub esc {
     $s =~ s/$r_paragraphsep/\\u2029/g;
 
     return $s;
+}
+
+sub char_at {
+    my ($text, $index) = @_;
+    return substr($text, $index, 1);
 }
 
 sub choose_method {
