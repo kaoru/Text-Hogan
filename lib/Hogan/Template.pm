@@ -2,6 +2,7 @@ package Hogan::Template;
 
 use strict;
 use warnings;
+use boolean;
 
 sub new {
     my $orig = shift;
@@ -138,7 +139,7 @@ sub s {
     my ($self, $val, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
     my $pass;
     if (ref($val) eq 'ARRAY' && !@$val) {
-        return 0;
+        return false;
     }
 
     if (ref($val) eq 'CODE') {
@@ -183,22 +184,22 @@ sub d {
 # find values with normal names
 sub f {
     my ($self, $key, $ctx, $partials, $return_found) = @_;
-    my $val = 0;
-    my $v;
-    my $found = 0;
+    my $val = false;
+    my $v = undef;
+    my $found = false;
     my $do_model_get = $self->{'otions'}{'model_get'};
 
     for (my $i = @$ctx - 1; $i >= 0; $i--) {
         $v = $ctx->[$i];
         $val = find_in_scope($key, $v, $do_model_get);
         if (defined $val) {
-            $found = 1;
+            $found = true;
             last;
         }
     }
 
     if (!$found) {
-        return $return_found ? 0 : "";
+        return $return_found ? false : "";
     }
 
     if (!$return_found && (ref($val) eq 'CODE')) {
@@ -217,7 +218,7 @@ sub ls {
     $self->b($self->ct(coerce_to_string($func->($self,$cx,$text,$ctx)), $cx, $partials));
     $self->{'options'}{'delimiters'} = $old_tags;
 
-    return 0;
+    return false;
 }
 
 # compile text
@@ -251,7 +252,7 @@ sub ms {
 
     if (ref($result) eq 'CODE') {
         if ($inverted) {
-            return 1;
+            return true;
         }
         else {
             $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
@@ -283,7 +284,7 @@ sub sub {
     if ($f) {
         $self->{'active_sub'} = $name;
         $f->($context,$partials,$self,$indent);
-        $self->{'active_sub'} = "";
+        $self->{'active_sub'} = false;
     }
 }
 

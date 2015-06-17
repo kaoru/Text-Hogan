@@ -4,6 +4,7 @@ use Hogan::Template;
 
 use strict;
 use warnings;
+use boolean;
 
 use Text::Trim 'trim';
 
@@ -44,7 +45,7 @@ sub scan {
         undef,
         "",
         [],
-        0,
+        false,
         0,
         0,
         '{{',
@@ -59,13 +60,13 @@ sub scan {
     };
 
     my $line_is_whitespace = sub {
-        my $is_all_whitespace = 1;
+        my $is_all_whitespace = true;
         for (my $j = $line_start; $j < @$tokens; $j++) {
             $is_all_whitespace =
                 ($tags{$tokens->[$j]{'tag'}} < $tags{'_v'}) ||
                 ($tokens->[$j]{'tag'} eq '_t' && $tokens->[$j]{'text'} !~ $r_is_whitespace);
             if (!$is_all_whitespace) {
-                return 0;
+                return false;
             }
         }
         return $is_all_whitespace;
@@ -90,7 +91,7 @@ sub scan {
             push @$tokens, { 'tag' => "\n" };
         }
 
-        $seen_tag = 0;
+        $seen_tag = false;
         $line_start = @$tokens;
     };
 
@@ -176,7 +177,7 @@ sub scan {
         }
     }
 
-    $filter_line->($seen_tag, 1);
+    $filter_line->($seen_tag, true);
 
     return $tokens;
 }
@@ -195,23 +196,23 @@ sub tag_change {
     my ($tag, $text, $index) = @_;
 
     if (substr($text, $index, 1) ne substr($tag, 0, 1)) {
-        return 0;
+        return false;
     }
 
     for (my $i = 1, my $l = length($tag); $i < $l; $i++) {
         if (substr($text, $index + $i, 1) ne substr($tag, $i, 1)) {
-            return 0;
+            return false;
         }
     }
 
-    return 1;
+    return true;
 }
 
 my %allowed_in_super = (
-    '_t' => 1,
-    "\n" => 1,
-    '$'  => 1,
-    '/'  => 1,
+    '_t' => true,
+    "\n" => true,
+    '$'  => true,
+    '/'  => true,
 );
 
 sub build_tree {
@@ -262,7 +263,7 @@ sub is_opener {
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
         if ($tags->[$i]{'o'} == $token->{'n'}) {
             $token->{'tag'} = '#';
-            return 1;
+            return true;
         }
     }
 
@@ -274,7 +275,7 @@ sub is_closer {
 
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
         if ($tags->[$i]{'c'} eq $close && $tags->[$i]{'o'} eq $open) {
-            return 1;
+            return true;
         }
     }
 
@@ -435,7 +436,7 @@ my %codegen = (
     '>' => \&create_partial,
     '<' => sub {
         my ($node, $context) = @_;
-        my $ctx = { 'partials' => {}, 'code' => "", 'subs' => {}, 'in_partial' => 1 };
+        my $ctx = { 'partials' => {}, 'code' => "", 'subs' => {}, 'in_partial' => true };
         walk($node->{'nodes'}, $ctx);
         my $template = $context->{'partials'}{create_partial($node, $context)};
         $template->{'subs'} = $ctx->{'subs'};
