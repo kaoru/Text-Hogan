@@ -179,6 +179,18 @@ sub d {
             }
         }
     }
+
+    if ($return_found && !$val) {
+        return false;
+    }
+
+    if (!$return_found && ref($val) eq 'CODE') {
+        push @$ctx, $cx;
+        $val = $self->mv($val, $ctx, $partials);
+        pop @$ctx;
+    }
+
+    return $val;
 }
 
 # find values with normal names
