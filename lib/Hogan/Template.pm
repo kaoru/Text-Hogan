@@ -75,7 +75,7 @@ sub ep {
     }
 
     if (!ref($template)) {
-        if ($self->{'c'}) {
+        if (!$self->{'c'}) {
             die "No compiler available";
         }
         $template = $self->{'c'}->compile($template, $self->{'options'});
@@ -123,13 +123,13 @@ sub rs {
     my ($self, $context, $partials, $section) = @_;
     my $tail = $context->[-1];
     if (ref $tail ne 'ARRAY') {
-        section($context, $partials, $self);
+        $section->($context, $partials, $self);
         return;
     }
 
     for (my $i = 0; $i < @$tail; $i++) {
         push @$context, $tail->[$i];
-        section($context, $partials, $self);
+        $section->($context, $partials, $self);
         pop @$context;
     }
 }
@@ -138,7 +138,7 @@ sub rs {
 sub s {
     my ($self, $val, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
     my $pass;
-    if (ref($val) eq 'ARRAY' && !@$val) {
+    if ((ref($val) eq 'ARRAY') && !@$val) {
         return false;
     }
 
@@ -149,7 +149,7 @@ sub s {
     $pass = !!$val;
 
     if (!$inverted && $pass && $ctx) {
-        push @$ctx, (ref($val) eq 'HASH') ? $val : $ctx->[-1];
+        push @$ctx, ((ref($val) eq 'ARRAY') || (ref($val) eq 'HASH')) ? $val : $ctx->[-1];
     }
 
     return $pass;
@@ -159,8 +159,26 @@ sub s {
 sub d {
     my ($self, $key, $ctx, $partials, $return_found) = @_;
     my $found;
-    my @names = split m/[.]/, $key;
+
+    # JavaScript split is super weird!!
+    #
+    # GOOD:
+    # > "a.b.c".split(".")
+    # [ 'a', 'b', 'c' ]
+    #
+    # BAD:
+    # > ".".split(".")
+    # [ '', '' ]
+    #
+    my @names;
+    if ($key eq '.') {
+        @names = ("", "");
+    }
+    else {
+        @names = split m/[.]/, $key;
+    }
     my $val = $self->f($names[0], $ctx, $partials, $return_found);
+
     my $do_model_get = $self->{'options'}{'model_get'};
     my $cx;
 
@@ -306,11 +324,13 @@ sub find_in_scope {
     my ($key, $scope, $do_model_get) = @_;
     my $val;
 
-    if (defined $scope->{$key}) {
-        $val = $scope->{$key};
-    }
-    elsif ($do_model_get) {
-        die "Do Model Get not implemented in Hogan.pm!";
+    if ($scope && ref($scope) eq 'HASH') {
+        if (defined $scope->{$key}) {
+            $val = $scope->{$key};
+        }
+        elsif ($do_model_get) {
+            die "Do Model Get not implemented in Hogan.pm!";
+        }
     }
 
     return $val;

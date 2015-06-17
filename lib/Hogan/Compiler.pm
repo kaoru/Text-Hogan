@@ -223,7 +223,7 @@ sub build_tree {
             die "Illegal content in < super tag.";
         }
 
-        if ($tags{$token->{'tag'}} <= $tags{'$'} || is_opener($token, $custom_tags)) {
+        if ($tags{$token->{'tag'}} && ($tags{$token->{'tag'}} <= $tags{'$'} || is_opener($token, $custom_tags))) {
             push @$stack, $token;
             $token->{'nodes'} = build_tree($tokens, $token->{'tag'}, $stack, $custom_tags);
         }
@@ -239,7 +239,7 @@ sub build_tree {
             return $instructions;
         }
         elsif ($token->{'tag'} eq "\n") {
-            $token->{'last'} = (@$tokens == 0) || ($tokens->[0]{'tag'} == "\n");
+            $token->{'last'} = (@$tokens == 0) || ($tokens->[0]{'tag'} eq "\n");
         }
 
         push @$instructions, $token;
@@ -396,7 +396,7 @@ sub create_partial {
         'name'     => $node->{'n'},
         'partials' => {},
     };
-    $context->{'code'} += sprintf('$t->b($t->rp("%s",$c,$p,"%s"));',
+    $context->{'code'} .= sprintf('$t->b($t->rp("%s",$c,$p,"%s"));',
         esc($sym),
         ($node->{'indent'} || "")
     );
@@ -416,7 +416,7 @@ my %codegen = (
             $node->{'ctag'}
         );
         walk($node->{'nodes'}, $context);
-        $context->{'code'} .= "};";
+        $context->{'code'} .= '}); pop @$c;}';
     },
     '^' => sub {
         my ($node, $context) = @_;
@@ -449,7 +449,7 @@ my %codegen = (
     },
     "\n" => sub {
         my ($node, $context) = @_;
-        $context->{'code'} .= twrite(sprintf('"\n"%s', ($node->{'last'} ? "" : ' + $i')));
+        $context->{'code'} .= twrite(sprintf('"\n"%s', ($node->{'last'} ? "" : ' . $i')));
     },
     '_v' => sub {
         my ($node, $context) = @_;
