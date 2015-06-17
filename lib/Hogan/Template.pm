@@ -199,7 +199,7 @@ sub f {
     my $val = false;
     my $v = undef;
     my $found = false;
-    my $do_model_get = $self->{'otions'}{'model_get'};
+    my $do_model_get = $self->{'options'}{'model_get'};
 
     for (my $i = @$ctx - 1; $i >= 0; $i--) {
         $v = $ctx->[$i];
