@@ -282,7 +282,7 @@ sub stringify_substitutions {
 
     my $items = [];
     for my $key (sort keys %$obj) {
-        push @$items, sprintf('"%s" => sub { my ($c, $p, $t, $i) = @_; %s }', esc($key), $obj->{$key});
+        push @$items, sprintf('"%s" => sub { my ($self,$c,$p,$t,$i) = @_; %s }', esc($key), $obj->{$key});
     }
 
     return sprintf("{ %s }", join(", ", @$items));
@@ -307,7 +307,7 @@ sub stringify_partials {
 
 sub stringify {
     my ($self,$code_obj, $text, $options) = @_;
-    return sprintf('{ code => sub { my ($c,$p,$i) = @_; %s }, %s }',
+    return sprintf('{ code => sub { my ($self,$c,$p,$i) = @_; %s }, %s }',
         wrap_main($code_obj->{'code'}),
         stringify_partials($code_obj)
     );
@@ -339,10 +339,7 @@ sub make_template {
     my ($code_obj, $text, $options) = @_;
 
     my $template = make_partials($code_obj);
-    $template->{'code'} = sub {
-        my ($c, $p, $i) = @_;
-        wrap_main($code_obj->{'code'});
-    };
+    $template->{'code'} = eval sprintf("sub { my (\$self, \$c, \$p, \$i) = \@_; %s }", wrap_main($code_obj->{'code'}));
     return $Template->new($template, $text, $self, $options);
 }
 
@@ -361,10 +358,7 @@ sub make_partials {
     }
 
     for my $key (sort keys %{ $code_obj->{'subs'} }) {
-        $template->{'subs'}{$key} = sub {
-            my ($c, $p, $t, $i) = @_;
-            $code_obj->{'subs'}{$key};
-        };
+        $template->{'subs'}{$key} = eval "sub { my (\$self, \$c, \$p, \$t, \$i) = \@_; $code_obj->{subs}{$key}; }";
     }
 
     return $template;
