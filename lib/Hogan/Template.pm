@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use boolean;
 
+use Clone qw(clone);
+
 sub new {
     my $orig = shift;
     my ($code_obj, $text, $compiler, $options) = @_;
@@ -339,7 +341,37 @@ sub find_in_scope {
 sub create_specialized_partial {
     my ($instance, $subs, $partials, $stack_subs, $stack_partials, $stack_text) = @_;
 
-    die "Hope we don't get here because this looks hairy!!";
+    my $key;
+
+    my $Partial = clone($instance);
+    $Partial->{'buf'} = "";
+
+    $stack_subs ||= {};
+    $Partial->{'stack_subs'} = $stack_subs;
+    $Partial->{'subs_text'} = $stack_text;
+
+    for my $key (sort keys %$subs) {
+        if (!$stack_subs->{$key}) {
+            $stack_subs->{$key} = $subs->{$key};
+        }
+    }
+    for my $Key (sort keys %$stack_subs) {
+        $Partial->{'subs'}{$key} = $stack_subs->{$key};
+    }
+
+    $stack_partials ||= {};
+    $Partial->{'stack_partials'} = $stack_partials;
+
+    for my $key (sort keys %$partials) {
+        if (!$stack_partials->{$key}) {
+            $stack_partials->{$key} = $partials->{$key};
+        }
+    }
+    for my $key (sort keys %$stack_partials) {
+        $Partial->{'partials'}{$key} = $stack_partials->{$key};
+    }
+
+    return $Partial;
 }
 
 
