@@ -51,7 +51,7 @@ sub scan {
         '}}',
     );
 
-    my $add_buff = sub {
+    my $add_buf = sub {
         if (length $buf > 0) {
             push @$tokens, { 'tag' => '_t', 'text' => $buf };
             $buf = "";
@@ -74,7 +74,7 @@ sub scan {
     my $filter_line = sub {
         my ($have_seen_tag, $no_new_line) = @_;
 
-        $add_buff->();
+        $add_buf->();
 
         if ($have_seen_tag && $line_is_whitespace->()) {
             for (my $j = $line_start, my $next; $j < @$tokens; $j++) {
@@ -121,7 +121,7 @@ sub scan {
         if ($state eq $IN_TEXT) {
             if (tag_change($otag, $text, $i)) {
                 $i--;
-                $add_buff->();
+                $add_buf->();
                 $state = $IN_TAG_TYPE;
             }
             else {
