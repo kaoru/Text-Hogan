@@ -4,14 +4,16 @@ use strict;
 use warnings;
 
 sub new {
-    my $class = shift;
+    my $orig = shift;
     my ($code_obj, $text, $compiler, $options) = @_;
 
     $code_obj ||= {};
 
+    my $class = ref($orig) || $orig;
+
     my $self = bless {}, $class;
 
-    $self->{'r'} = $code_obj->{'code'};
+    $self->{'r'} = $code_obj->{'code'} || (ref($orig) && $orig->{'r'});
     $self->{'c'} = $compiler;
     $self->{'options'} = $options || {};
     $self->{'text'} = $text || "";

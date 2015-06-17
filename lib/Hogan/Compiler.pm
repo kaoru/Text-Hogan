@@ -24,6 +24,8 @@ my %tags = (
     '{' => 10, '&' => 11, '_t' => 12
 );
 
+my $Template = Hogan::Template->new();
+
 sub new {
     my $class = shift;
     return bless {}, $class;
@@ -345,7 +347,7 @@ sub make_template {
         my ($c, $p, $i) = @_;
         wrap_main($code_obj->{'code'});
     };
-    return Hogan::Template->new($template, $text, $self, $options);
+    return $Template->new($template, $text, $self, $options);
 }
 
 sub make_partials {
