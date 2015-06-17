@@ -463,6 +463,10 @@ my %codegen = (
             esc($node->{'n'})
         ));
     },
+    '_t' => sub {
+        my ($node, $context) = @_;
+        $context->{'code'} .= twrite(sprintf('"%s"', esc($node->{'text'})));
+    },
     '{' => \&triple_stache,
     '&' => \&triple_stache,
 );
