@@ -165,9 +165,9 @@ sub scan {
                         clean_triple_stache($tokens->[-1]);
                     }
                 }
-                else {
-                    $buf .= char_at($text, $i);
-                }
+            }
+            else {
+                $buf .= char_at($text, $i);
             }
         }
     }
