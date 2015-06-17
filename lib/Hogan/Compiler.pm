@@ -24,8 +24,13 @@ my %tags = (
     '{' => 10, '&' => 11, '_t' => 12
 );
 
+sub new {
+    my $class = shift;
+    return bless {}, $class;
+}
+
 sub scan {
-    my ($text, $delimiters) = @_;
+    my ($self, $text, $delimiters) = @_;
 
     my ($len, $IN_TEXT, $IN_TAG_TYPE, $IN_TAG, $state, $tag_type, $tag, $buf, $tokens, $seen_tag, $i, $line_start, $otag, $ctag) = (
         length($text),
@@ -56,7 +61,7 @@ sub scan {
         for (my $j = $line_start; $j < @$tokens; $j++) {
             $is_all_whitespace =
                 ($tags{$tokens->[$j]{'tag'}} < $tags{'_v'}) ||
-                ($tokens->[$j]{'tag'} == '_t' && $tokens->[$j]{'text'} !~ $r_is_whitespace);
+                ($tokens->[$j]{'tag'} eq '_t' && $tokens->[$j]{'text'} !~ $r_is_whitespace);
             if (!$is_all_whitespace) {
                 return 0;
             }
@@ -152,7 +157,7 @@ sub scan {
                     'i'     => (($tag_type eq '/') ? $seen_tag - length($otag) : $i + length($ctag)),
                 };
                 $buf = "";
-                $i += length($ctag) + 1;
+                $i += length($ctag) - 1;
                 $state = $IN_TEXT;
                 if ($tag_type eq '{') {
                     if ($ctag eq '}}') {
@@ -229,7 +234,7 @@ sub build_tree {
                 die "Closing tag without opener: /$token->{'n'}";
             }
             $opener = pop @$stack;
-            if ($token->{'n'} != $opener->{'n'} && !is_closer($token->{'n'}, $opener->{'n'}, $custom_tags)) {
+            if ($token->{'n'} ne $opener->{'n'} && !is_closer($token->{'n'}, $opener->{'n'}, $custom_tags)) {
                 die "Nesting error: $opener->{'n'} vs $token->{'n'}";
             }
             $opener->{'end'} = $token->{'i'};
@@ -312,7 +317,7 @@ sub stringify {
 
 my $serial_no = 0;
 sub generate {
-    my ($tree, $text, $options) = @_;
+    my ($self, $tree, $text, $options) = @_;
 
     $serial_no = 0;
 
@@ -323,7 +328,7 @@ sub generate {
         return stringify($context, $text, $options);
     }
 
-    return make_template($context, $text, $options);
+    return $self->make_template($context, $text, $options);
 }
 
 sub wrap_main {
@@ -380,7 +385,7 @@ sub esc {
     return $s;
 }
 
-sub choose_methods {
+sub choose_method {
     my ($s) = @_;
     return $s =~ m/[.]/ ? "d" : "f";
 }
@@ -451,7 +456,7 @@ my %codegen = (
     },
     '_v' => sub {
         my ($node, $context) = @_;
-        $context->{'code'} += twrite(sprintf('t.v(t.%s("%s",c,p,0))',
+        $context->{'code'} .= twrite(sprintf('t.v(t.%s("%s",c,p,0))',
             choose_method($node->{'n'}),
             esc($node->{'n'})
         ));
@@ -484,7 +489,7 @@ sub walk {
 }
 
 sub parse {
-    my ($tokens, $text, $options) = @_;
+    my ($self, $tokens, $text, $options) = @_;
     $options ||= {};
     return build_tree($tokens, "", [], $options->{'selection_tags'} || []);
 }
@@ -493,11 +498,11 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'disable_lambda'}, $options->{'delimiters'}, !!$options->{'model_get'});
+    return join("||", $text, !!$options->{'as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} // ""), !!$options->{'model_get'});
 }
 
 sub compile {
-    my ($text, $options) = @_;
+    my ($self, $text, $options) = @_;
     $options ||= {};
     my $key = cache_key($text, $options);
     my $template = $cache{$key};
@@ -510,7 +515,11 @@ sub compile {
         return $template;
     }
 
-    $template = generate(parse(scan($text, $options->{'delimiters'}), $text, $options), $text, $options);
+    $template = $self->generate(
+        $self->parse(
+            $self->scan($text, $options->{'delimiters'}), $text, $options
+        ), $text, $options
+    );
 
     return $cache{$key} = $template;
 }

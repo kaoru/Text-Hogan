@@ -25,6 +25,11 @@ sub new {
 
 sub r {
     my ($self, $context, $partials, $indent) = @_;
+
+    if ($self->{'r'}) {
+        return $self->{'r'}->($self, $context, $partials, $indent);
+    }
+
     return "";
 }
 
