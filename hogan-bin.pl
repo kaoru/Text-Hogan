@@ -11,7 +11,7 @@ use Hogan::Template;
 
 my $c = Hogan::Compiler->new();
 
-my $text = "Hello, {{name}}";
+my $text = "Hello, {{name}}!";
 
 my $s = $c->scan($text);
 
