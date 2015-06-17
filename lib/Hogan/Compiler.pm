@@ -309,7 +309,7 @@ sub stringify_partials {
 
 sub stringify {
     my ($code_obj, $text, $options) = @_;
-    return sprintf("{code: function(c,p,i) { %s },%s}",
+    return sprintf('{ code => sub { my ($c,$p,$i) = @_; %s }, %s }',
         wrap_main($code_obj->{'code'}),
         stringify_partials($code_obj)
     );
@@ -333,7 +333,7 @@ sub generate {
 
 sub wrap_main {
     my ($code) = @_;
-    return qq{var t=this;t.b(i=i||"");${code}return t.fl();};
+    return sprintf('my $t = $self; $t->b($i = $i || ""); %s return $t->fl();', $code);
 }
 
 sub make_template {
@@ -399,7 +399,7 @@ sub create_partial {
         'name'     => $node->{'n'},
         'partials' => {},
     };
-    $context->{'code'} += sprintf('t.b(t.rp("%s%,c,p,"%s"));',
+    $context->{'code'} += sprintf('$t->b($t->rp("%s",$c,$p,"%s"));',
         esc($sym),
         ($node->{'indent'} || "")
     );
@@ -410,7 +410,7 @@ sub create_partial {
 my %codegen = (
     '#' => sub {
         my ($node, $context) = @_;
-        $context->{'code'} .= sprintf('if(t.s(t.%s("%s",c,p,1),c,p,0,%s,%s,"%s %s")){t.rs(c,p,function(c,p,t){',
+        $context->{'code'} .= sprintf('if($t->s($t->%s("%s",$c,$p,1),$c,$p,0,%s,%s,"%s %s")) { $t->rs($c,$p,sub { my ($c,$p,$t) = @_;',
             choose_method($node->{'n'}),
             esc($node->{'n'}),
             $node->{'i'},
@@ -423,7 +423,7 @@ my %codegen = (
     },
     '^' => sub {
         my ($node, $context) = @_;
-        $context->{'code'} .= sprintf('if(!t.s(t.%s("%s",c,p,1),c,p,1,0,0,"")){',
+        $context->{'code'} .= sprintf('if (!$t->s($t->%s("%s",$c,$p,1),$c,$p,1,0,0,"")){',
             choose_method($node->{'n'}),
             esc($node->{'n'})
         );
@@ -445,18 +445,18 @@ my %codegen = (
         walk($node->{'nodes'}, $ctx);
         $context->{'subs'}{$node->{'n'}} = $ctx->{'code'};
         if (!$context->{'in_partial'}) {
-            $context->{'code'} += sprintf('t.sub("%s",c,p,i);',
+            $context->{'code'} += sprintf('$t->sub("%s",$c,$p,$i);',
                 esc($node->{'n'})
             );
         }
     },
     "\n" => sub {
         my ($node, $context) = @_;
-        $context->{'code'} .= twrite(sprintf('"\n"%s', ($node->{'last'} ? "" : " + i")));
+        $context->{'code'} .= twrite(sprintf('"\n"%s', ($node->{'last'} ? "" : ' + $i')));
     },
     '_v' => sub {
         my ($node, $context) = @_;
-        $context->{'code'} .= twrite(sprintf('t.v(t.%s("%s",c,p,0))',
+        $context->{'code'} .= twrite(sprintf('$t->v($t->%s("%s",$c,$p,0))',
             choose_method($node->{'n'}),
             esc($node->{'n'})
         ));
@@ -467,7 +467,7 @@ my %codegen = (
 
 sub triple_stache {
     my ($node, $context) = @_;
-    $context->{'code'} += sprintf('t.b(t.t(t.%s("%s",c,p,0)));',
+    $context->{'code'} += sprintf('$t->b($t->t($t->%s("%s",$c,$p,0)))',
         choose_method($node->{'n'}),
         esc($node->{'n'})
     );
@@ -475,7 +475,7 @@ sub triple_stache {
 
 sub twrite {
     my ($s) = @_;
-    return "t.b($s);";
+    return sprintf('$t->b(%s);', $s);
 }
 
 sub walk {
