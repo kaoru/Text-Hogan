@@ -35,22 +35,17 @@ sub new {
 sub scan {
     my ($self, $text, $delimiters) = @_;
 
-    my ($len, $IN_TEXT, $IN_TAG_TYPE, $IN_TAG, $state, $tag_type, $tag, $buf, $tokens, $seen_tag, $i, $line_start, $otag, $ctag) = (
-        length($text),
-        0,
-        1,
-        2,
-        0, # first state is $IN_TEXT
-        undef,
-        undef,
-        "",
-        [],
-        false,
-        0,
-        0,
-        '{{',
-        '}}',
-    );
+    my $len = length $text;
+    my ($IN_TEXT, $IN_TAG_TYPE, $IN_TAG) = (0, 1, 2);
+    my $state = $IN_TEXT;
+    my $tag_type = undef;
+    my $tag = undef;
+    my $buf = "";
+    my $tokens = [];
+    my $seen_tag = false;
+    my $i = 0;
+    my $line_start = 0;
+    my ($otag, $ctag) = ('{{', '}}');
 
     my $add_buf = sub {
         if (length $buf > 0) {
@@ -81,7 +76,7 @@ sub scan {
             for (my $j = $line_start, my $next; $j < @$tokens; $j++) {
                 if ($tokens->[$j]{'text'}) {
                     if (($next = $tokens->[$j+1]) && $next->{'tag'} eq '>') {
-                        $next->{'indent'} = $tokens->[$j]{'text'};
+                        $next->{'indent'} = "".$tokens->[$j]{'text'};
                     }
                     splice(@$tokens,$j,1);
                 }
@@ -92,7 +87,7 @@ sub scan {
         }
 
         $seen_tag = false;
-        $line_start = @$tokens;
+        $line_start = scalar @$tokens;
     };
 
     my $change_delimiters = sub {
@@ -121,7 +116,7 @@ sub scan {
     for (my $i = 0; $i < $len; $i++) {
         if ($state eq $IN_TEXT) {
             if (tag_change($otag, $text, $i)) {
-                $i--;
+                --$i;
                 $add_buf->();
                 $state = $IN_TAG_TYPE;
             }
@@ -185,7 +180,7 @@ sub scan {
 sub clean_triple_stache {
     my ($token) = @_;
 
-    if (substr($token->{'n'}, length($token->{'n'} - 1)) eq '}') {
+    if (substr($token->{'n'}, length($token->{'n'}) - 1) eq '}') {
         $token->{'n'} = substr($token->{'n'}, 0, length($token->{'n'}) - 1);
     }
 
@@ -216,15 +211,15 @@ my %allowed_in_super = (
 );
 
 sub build_tree {
-    my ($tokens, $Kind, $stack, $custom_tags) = @_;
+    my ($tokens, $kind, $stack, $custom_tags) = @_;
     my ($instructions, $opener, $tail, $token) = ([], undef, undef, undef);
 
     $tail = $stack->[-1];
 
-    while (scalar @$tokens) {
+    while (@$tokens > 0) {
         $token = shift @$tokens;
 
-        if ($tail && $tail->{'tag'} eq '<' && !$allowed_in_super{$token->{'tag'}}) {
+        if ($tail && ($tail->{'tag'} eq '<') && !$allowed_in_super{$token->{'tag'}}) {
             die "Illegal content in < super tag.";
         }
 
@@ -261,36 +256,36 @@ sub is_opener {
     my ($token, $tags) = @_;
 
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
-        if ($tags->[$i]{'o'} == $token->{'n'}) {
+        if ($tags->[$i]{'o'} eq $token->{'n'}) {
             $token->{'tag'} = '#';
             return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 sub is_closer {
     my ($close, $open, $tags) = @_;
 
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
-        if ($tags->[$i]{'c'} eq $close && $tags->[$i]{'o'} eq $open) {
+        if (($tags->[$i]{'c'} eq $close) && ($tags->[$i]{'o'} eq $open)) {
             return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 sub stringify_substitutions {
     my $obj = shift;
 
-    my @items;
+    my $items = [];
     for my $key (sort keys %$obj) {
-        push @items, sprintf('"%s": function(c,p,t,i) {%s}', esc($key), $obj->{$key});
+        push @$items, sprintf('"%s" => sub { my ($c, $p, $t, $i) = @_; %s }', esc($key), $obj->{$key});
     }
 
-    return sprintf("{ %s }", join(",", @items));
+    return sprintf("{ %s }", join(", ", @$items));
 }
 
 sub stringify_partials {
@@ -298,20 +293,20 @@ sub stringify_partials {
 
     my @partials;
     for my $key (sort keys %{ $code_obj->{'partials'} }) {
-        push @partials, sprintf('"%s":{name:"%s", %s}',
+        push @partials, sprintf('"%s" => { "name" => "%s", %s }',
             esc($code_obj->{'partials'}{$key}{'name'}),
             stringify_partials($code_obj->{'partials'}{$key})
         );
     }
 
-    return sprintf("partials: {%s}, subs: %s",
+    return sprintf('"partials" => { %s }, "subs" => %s',
         join(",", @partials),
         stringify_substitutions($code_obj->{'subs'})
     );
 }
 
 sub stringify {
-    my ($code_obj, $text, $options) = @_;
+    my ($self,$code_obj, $text, $options) = @_;
     return sprintf('{ code => sub { my ($c,$p,$i) = @_; %s }, %s }',
         wrap_main($code_obj->{'code'}),
         stringify_partials($code_obj)
@@ -328,7 +323,7 @@ sub generate {
     walk($tree, $context);
 
     if ($options->{'as_string'}) {
-        return stringify($context, $text, $options);
+        return $self->stringify($context, $text, $options);
     }
 
     return $self->make_template($context, $text, $options);
