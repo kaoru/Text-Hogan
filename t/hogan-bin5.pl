@@ -11,7 +11,7 @@ use Hogan::Template;
 
 my $c = Hogan::Compiler->new();
 
-my $text = "Hello, {{name}}!";
+my $text = "{{>partials}}";
 
 my $s = $c->scan($text);
 
@@ -19,6 +19,11 @@ my $p = $c->parse($s, $text);
 
 my $g = $c->generate($p, $text, {});
 
-my $o = $g->render({ name => "Alex" });
+say $c->generate($p, $text, { as_string => 1 }), "\n\n";
+
+my $o = $g->render(
+    { are => { magic => "partially..." } },
+    { 'partials' => '{{#are}} {{magical}} {{/are}}' },
+);
 
 say $o;
