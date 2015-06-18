@@ -1,0 +1,7 @@
+# generic temporary files
+.DS_Store
+._.DS_Store
+.*.swp
+*#
+*~
+.#*
