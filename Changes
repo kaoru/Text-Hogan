@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+0.03 2015-06-18
+    * remove un-used "use DDP;" from spec_test.t
+
 0.02 2015-06-18
     * drop boolean.pm as a requirement
 
