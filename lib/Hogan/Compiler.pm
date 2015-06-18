@@ -95,9 +95,24 @@ sub scan {
 
         my $close = '=' . $ctag;
         my $close_index = index($text, $close, $index);
+        my $offset = index($text, '=', $index) + 1;
         my $delimiters = [
             split ' ', trim(
-                substr($text, index($text, '=', $index) + 1, $close_index)
+                # WARNING
+                #
+                # JavaScript substring and Perl substring functions differ!
+                #
+                # JavaScript's length parameter always goes from the beginning
+                # of the string, whereas Perl's goes from the offset parameter!
+                #
+                # node> "{{=<% %>=}}".substring(3, 8)
+                # '<% %>'
+                #
+                # perl> substr("{{=<% %>=}}", 3, 8);
+                # <% %>=}}
+                #
+                #
+                substr($text, $offset, $close_index - $offset)
             )
         ];
 
