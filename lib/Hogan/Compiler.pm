@@ -382,12 +382,18 @@ sub make_partials {
 sub esc {
     my $s = shift;
 
+    # standard from hogan.js
     $s =~ s/$r_slash/\\\\/g;
     $s =~ s/$r_quot/\\\"/g;
     $s =~ s/$r_newline/\\n/g;
     $s =~ s/$r_cr/\\r/g;
     $s =~ s/$r_linesep/\\u2028/g;
     $s =~ s/$r_paragraphsep/\\u2029/g;
+
+    # specific for Hogan.pm / Perl
+    $s =~ s/\$/\\\$/g;
+    $s =~ s/\@/\\@/g;
+    $s =~ s/\%/\\%/g;
 
     return $s;
 }
