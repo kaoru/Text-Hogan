@@ -468,7 +468,7 @@ my %codegen = (
 
 sub triple_stache {
     my ($node, $context) = @_;
-    $context->{'code'} += sprintf('$t->b($t->t($t->%s("%s",$c,$p,0)))',
+    $context->{'code'} .= sprintf('$t->b($t->t($t->%s("%s",$c,$p,0)));',
         choose_method($node->{'n'}),
         esc($node->{'n'})
     );
