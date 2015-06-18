@@ -8,7 +8,6 @@ use Test::More;
 use YAML;
 use Path::Tiny;
 use Try::Tiny;
-use DDP;
 use Data::Visitor::Callback;
 
 use Text::Hogan::Compiler;
