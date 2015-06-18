@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use boolean;
 
+use Scalar::Util qw(looks_like_number);
 use Clone qw(clone);
 
 sub new {
@@ -210,6 +211,15 @@ sub d {
         pop @$ctx;
     }
 
+    # handle numerical interpolation for decimal numbers
+    # "properly"...
+    #
+    # according to the mustache spec 1.210 should render as 1.21
+    #
+    if (looks_like_number($val)) {
+        $val = $val + 0;
+    }
+
     return $val;
 }
 
@@ -236,6 +246,15 @@ sub f {
 
     if (!$return_found && (ref($val) eq 'CODE')) {
         $val = $self->mv($val, $ctx, $partials);
+    }
+
+    # handle numerical interpolation for decimal numbers
+    # "properly"...
+    #
+    # according to the mustache spec 1.210 should render as 1.21
+    #
+    if (looks_like_number($val)) {
+        $val = $val + 0;
     }
 
     return $val;
