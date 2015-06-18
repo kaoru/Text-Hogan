@@ -1,4 +1,4 @@
-package Hogan::Template;
+package Text::Hogan::Template;
 
 use strict;
 use warnings;
@@ -350,7 +350,7 @@ sub find_in_scope {
             $val = $scope->{$key};
         }
         elsif ($do_model_get) {
-            die "Do Model Get not implemented in Hogan.pm!";
+            die "Do Model Get not implemented in Text::Hogan!";
         }
     }
 
@@ -400,3 +400,27 @@ sub coerce_to_string {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Text::Hogan::Template - represent and render compiled templates
+
+=head1 SYNOPSIS
+
+Use Text::Hogan::Compiler to create Template objects.
+
+I'll document this better soon.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2015 Lokku Ltd.
+
+=head1 AUTHOR
+
+Basically statement-for-statement copied from hogan.js by Twitter!
+
+Alex Balhatchet (alex@lokku.com)
+
+=cut

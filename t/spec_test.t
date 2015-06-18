@@ -11,8 +11,7 @@ use Try::Tiny;
 use DDP;
 use Data::Visitor::Callback;
 
-use lib '/home/alex/Documents/Git/Hogan.pm/lib';
-use Hogan::Compiler;
+use Text::Hogan::Compiler;
 
 my $data_fixer = Data::Visitor::Callback->new(
     # Handle true/false values
@@ -26,16 +25,13 @@ my $data_fixer = Data::Visitor::Callback->new(
     }
 );
 
-my @spec_files = path("specs")->children(qr/[.]yml$/);
+my @spec_files = path("t", "specs")->children(qr/[.]yml$/);
 
 for my $file (@spec_files) {
-#   next if $file =~ m/comments[.]yml$/;
-#   next if $file =~ m/interpolation[.]yml$/;
-#   next if $file =~ m/partials[.]yml$/;
-#   next if $file =~ m/sections[.]yml$/;
-#   next if $file =~ m/inverted[.]yml$/;
-#   next if $file =~ m/delimiters[.]yml$/;
-    next if $file =~ m/~lambdas[.]yml$/;
+    local $TODO;
+    if ($file =~ m/~lambdas[.]yml$/) {
+        $TODO = "Lambdas not yet implemented!";
+    }
 
     my $yaml = $file->slurp_utf8;
 
@@ -58,7 +54,7 @@ for my $file (@spec_files) {
             }
         }
 
-        my $parser = Hogan::Compiler->new();
+        my $parser = Text::Hogan::Compiler->new();
 
         my $rendered;
         try {

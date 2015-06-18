@@ -1,0 +1,4 @@
+Revision history for perl module Text::Hogan
+
+0.01 2015-06-18
+    * initial release based on hogan.js 3.0.2

@@ -1,6 +1,6 @@
-package Hogan::Compiler;
+package Text::Hogan::Compiler;
 
-use Hogan::Template;
+use Text::Hogan::Template;
 
 use strict;
 use warnings;
@@ -25,7 +25,7 @@ my %tags = (
     '{' => 10, '&' => 11, '_t' => 12
 );
 
-my $Template = Hogan::Template->new();
+my $Template = Text::Hogan::Template->new();
 
 sub new {
     my $class = shift;
@@ -390,7 +390,7 @@ sub esc {
     $s =~ s/$r_linesep/\\u2028/g;
     $s =~ s/$r_paragraphsep/\\u2029/g;
 
-    # specific for Hogan.pm / Perl
+    # specific for Text::Hogan / Perl
     $s =~ s/\$/\\\$/g;
     $s =~ s/\@/\\@/g;
     $s =~ s/\%/\\%/g;
@@ -548,3 +548,37 @@ sub compile {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Text::Hogan::Compiler - parse templates and output Perl code
+
+=head1 SYNOPSIS
+
+    use Text::Hogan::Compiler;
+
+    my $compiler = Text::Hogan::Compiler->new;
+
+    my $text = "Hello, {{name}}!";
+
+    my $tokens   = $compiler->scan($text);
+    my $tree     = $compiler->parse($scanned, $text);
+    my $template = $compiler->generate($parsed, $text);
+
+    say $template->render({ name => "Alex" });
+
+There are various options you can pass to scan, parse, generate and render but I haven't documented them yet.
+
+=head1 COPYRIGHT
+
+Copyright (C) 2015 Lokku Ltd.
+
+=head1 AUTHOR
+
+Basically statement-for-statement copied from hogan.js by Twitter!
+
+Alex Balhatchet (alex@lokku.com)
+
+=cut
