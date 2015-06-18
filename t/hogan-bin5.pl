@@ -22,7 +22,7 @@ my $g = $c->generate($p, $text, {});
 say $c->generate($p, $text, { as_string => 1 }), "\n\n";
 
 my $o = $g->render(
-    { are => { magic => "partially..." } },
+    { are => { magical => "partially..." } },
     { 'partials' => '{{#are}} {{magical}} {{/are}}' },
 );
 
