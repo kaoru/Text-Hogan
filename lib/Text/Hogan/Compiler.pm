@@ -4,7 +4,6 @@ use Text::Hogan::Template;
 
 use strict;
 use warnings;
-use boolean;
 
 use Text::Trim 'trim';
 
@@ -42,7 +41,7 @@ sub scan {
     my $tag = undef;
     my $buf = "";
     my $tokens = [];
-    my $seen_tag = false;
+    my $seen_tag = 0;
     my $i = 0;
     my $line_start = 0;
     my ($otag, $ctag) = ('{{', '}}');
@@ -55,13 +54,13 @@ sub scan {
     };
 
     my $line_is_whitespace = sub {
-        my $is_all_whitespace = true;
+        my $is_all_whitespace = 1;
         for (my $j = $line_start; $j < @$tokens; $j++) {
             $is_all_whitespace =
                 ($tags{$tokens->[$j]{'tag'}} < $tags{'_v'}) ||
                 ($tokens->[$j]{'tag'} eq '_t' && $tokens->[$j]{'text'} !~ $r_is_whitespace);
             if (!$is_all_whitespace) {
-                return false;
+                return 0;
             }
         }
         return $is_all_whitespace;
@@ -86,7 +85,7 @@ sub scan {
             push @$tokens, { 'tag' => "\n" };
         }
 
-        $seen_tag = false;
+        $seen_tag = 0;
         $line_start = scalar @$tokens;
     };
 
@@ -187,7 +186,7 @@ sub scan {
         }
     }
 
-    $filter_line->($seen_tag, true);
+    $filter_line->($seen_tag, 1);
 
     return $tokens;
 }
@@ -206,23 +205,23 @@ sub tag_change {
     my ($tag, $text, $index) = @_;
 
     if (char_at($text, $index) ne char_at($tag, 0)) {
-        return false;
+        return 0;
     }
 
     for (my $i = 1, my $l = length($tag); $i < $l; $i++) {
         if (char_at($text, $index + $i) ne char_at($tag, $i)) {
-            return false;
+            return 0;
         }
     }
 
-    return true;
+    return 1;
 }
 
 my %allowed_in_super = (
-    '_t' => true,
-    "\n" => true,
-    '$'  => true,
-    '/'  => true,
+    '_t' => 1,
+    "\n" => 1,
+    '$'  => 1,
+    '/'  => 1,
 );
 
 sub build_tree {
@@ -273,11 +272,11 @@ sub is_opener {
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
         if ($tags->[$i]{'o'} eq $token->{'n'}) {
             $token->{'tag'} = '#';
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 sub is_closer {
@@ -285,11 +284,11 @@ sub is_closer {
 
     for (my $i = 0, my $l = scalar(@$tags); $i < $l; $i++) {
         if (($tags->[$i]{'c'} eq $close) && ($tags->[$i]{'o'} eq $open)) {
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 sub stringify_substitutions {
@@ -451,7 +450,7 @@ my %codegen = (
     '>' => \&create_partial,
     '<' => sub {
         my ($node, $context) = @_;
-        my $ctx = { 'partials' => {}, 'code' => "", 'subs' => {}, 'in_partial' => true };
+        my $ctx = { 'partials' => {}, 'code' => "", 'subs' => {}, 'in_partial' => 1 };
         walk($node->{'nodes'}, $ctx);
         my $template = $context->{'partials'}{create_partial($node, $context)};
         $template->{'subs'} = $ctx->{'subs'};

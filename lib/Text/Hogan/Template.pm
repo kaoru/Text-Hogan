@@ -2,7 +2,6 @@ package Text::Hogan::Template;
 
 use strict;
 use warnings;
-use boolean;
 
 use Scalar::Util qw(looks_like_number);
 use Clone qw(clone);
@@ -142,7 +141,7 @@ sub s {
     my ($self, $val, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
     my $pass;
     if ((ref($val) eq 'ARRAY') && !@$val) {
-        return false;
+        return 0;
     }
 
     if (ref($val) eq 'CODE') {
@@ -202,7 +201,7 @@ sub d {
     }
 
     if ($return_found && !$val) {
-        return false;
+        return 0;
     }
 
     if (!$return_found && ref($val) eq 'CODE') {
@@ -226,22 +225,22 @@ sub d {
 # find values with normal names
 sub f {
     my ($self, $key, $ctx, $partials, $return_found) = @_;
-    my $val = false;
+    my $val = 0;
     my $v = undef;
-    my $found = false;
+    my $found = 0;
     my $do_model_get = $self->{'options'}{'model_get'};
 
     for (my $i = @$ctx - 1; $i >= 0; $i--) {
         $v = $ctx->[$i];
         $val = find_in_scope($key, $v, $do_model_get);
         if (defined $val) {
-            $found = true;
+            $found = 1;
             last;
         }
     }
 
     if (!$found) {
-        return $return_found ? false : "";
+        return $return_found ? 0 : "";
     }
 
     if (!$return_found && (ref($val) eq 'CODE')) {
@@ -269,7 +268,7 @@ sub ls {
     $self->b($self->ct(coerce_to_string($func->($self,$cx,$text,$ctx)), $cx, $partials));
     $self->{'options'}{'delimiters'} = $old_tags;
 
-    return false;
+    return 0;
 }
 
 # compile text
@@ -303,7 +302,7 @@ sub ms {
 
     if (ref($result) eq 'CODE') {
         if ($inverted) {
-            return true;
+            return 1;
         }
         else {
             $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
@@ -335,7 +334,7 @@ sub sub {
     if ($f) {
         $self->{'active_sub'} = $name;
         $f->($context,$partials,$self,$indent);
-        $self->{'active_sub'} = false;
+        $self->{'active_sub'} = 0;
     }
 }
 
