@@ -526,6 +526,7 @@ sub cache_key {
 sub compile {
     my ($self, $text, $options) = @_;
     $options ||= {};
+    $text //= "";
     my $key = cache_key($text, $options);
     my $template = $cache{$key};
 
