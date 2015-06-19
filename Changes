@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+0.05 2015-06-19
+    * use Github as a bug tracker rather than rt.cpan.org
+
 0.04 2015-06-19
     * add Minimum Perl version to dist.ini
     * don't use defined-or to support Perl 5.6 and 5.8
