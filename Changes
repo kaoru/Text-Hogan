@@ -1,5 +1,9 @@
 Revision history for perl module Text::Hogan
 
+0.04 2015-06-19
+    * add Minimum Perl version to dist.ini
+    * don't use defined-or to support Perl 5.6 and 5.8
+
 0.03 2015-06-18
     * remove un-used "use DDP;" from spec_test.t
 
