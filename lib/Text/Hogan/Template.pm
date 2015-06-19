@@ -261,14 +261,16 @@ sub f {
 
 # higher order templates
 sub ls {
-    my ($self, $func, $cx, $ctx, $partials, $text, $tags) = @_;
-    my $old_tags = $self->{'options'}{'delimiters'};
+    die "Higher Order Templates Not Supported Yet!\n";
 
-    $self->{'options'}{'delimiters'} = $tags;
-    $self->b($self->ct(coerce_to_string($func->($self,$cx,$text,$ctx)), $cx, $partials));
-    $self->{'options'}{'delimiters'} = $old_tags;
-
-    return 0;
+#   my ($self, $func, $cx, $ctx, $partials, $text, $tags) = @_;
+#   my $old_tags = $self->{'options'}{'delimiters'};
+#
+#   $self->{'options'}{'delimiters'} = $tags;
+#   $self->b($self->ct(coerce_to_string($func->($self,$cx,$text,$ctx)), $cx, $partials));
+#   $self->{'options'}{'delimiters'} = $old_tags;
+#
+#   return 0;
 }
 
 # compile text
@@ -295,24 +297,25 @@ sub fl {
 
 # method replace section
 sub ms {
-    my ($self, $func, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
-    my $text_source;
-    my $cx = $ctx->[-1];
-    my $result = $func->($self, $cx);
-
-    if (ref($result) eq 'CODE') {
-        if ($inverted) {
-            return 1;
-        }
-        else {
-            $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
-                ? $self->{'subs_text'}{$self->{'active_sub'}}
-                : $self->{'text'};
-            return $self->ls($result, $cx, $ctx, $partials, substr($text_source,$start,$end), $tags);
-        }
-    }
-
-    return $result;
+    die "Lambda Sections Not Supported Yet!\n";
+#   my ($self, $func, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
+#   my $text_source;
+#   my $cx = $ctx->[-1];
+#   my $result = $func->($self, $cx);
+#
+#   if (ref($result) eq 'CODE') {
+#       if ($inverted) {
+#           return 1;
+#       }
+#       else {
+#           $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
+#               ? $self->{'subs_text'}{$self->{'active_sub'}}
+#               : $self->{'text'};
+#           return $self->ls($result, $cx, $ctx, $partials, substr($text_source,$start,$end), $tags);
+#       }
+#   }
+#
+#   return $result;
 }
 
 # method replace variable
