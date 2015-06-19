@@ -42,11 +42,13 @@ sub v {
     my ($self, $str) = @_;
     $str = $self->t($str);
 
-    $str =~ s/&/&amp;/g;
-    $str =~ s/</&lt;/g;
-    $str =~ s/>/&gt;/g;
-    $str =~ s/'/&#39;/g;
-    $str =~ s/"/&quot;/g;
+    if ($str =~ m{[&<>'"]}) {
+        $str =~ s/&/&amp;/g;
+        $str =~ s/</&lt;/g;
+        $str =~ s/>/&gt;/g;
+        $str =~ s/'/&#39;/g;
+        $str =~ s/"/&quot;/g;
+    }
 
     return $str;
 }
