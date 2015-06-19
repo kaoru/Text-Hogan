@@ -345,7 +345,7 @@ sub generate {
 
 sub wrap_main {
     my ($code) = @_;
-    return sprintf('my $t = $self; $t->b($i = $i || ""); %s return $t->fl();', $code);
+    return sprintf('$t->b($i = $i || ""); %s return $t->fl();', $code);
 }
 
 sub make_template {
@@ -353,7 +353,7 @@ sub make_template {
     my ($code_obj, $text, $options) = @_;
 
     my $template = make_partials($code_obj);
-    $template->{'code'} = eval sprintf("sub { my (\$self, \$c, \$p, \$i) = \@_; %s }", wrap_main($code_obj->{'code'}));
+    $template->{'code'} = eval sprintf("sub { my (\$t, \$c, \$p, \$i) = \@_; %s }", wrap_main($code_obj->{'code'}));
     return $Template->new($template, $text, $self, $options);
 }
 
@@ -372,7 +372,7 @@ sub make_partials {
     }
 
     for my $key (sort keys %{ $code_obj->{'subs'} }) {
-        $template->{'subs'}{$key} = eval "sub { my (\$self, \$c, \$p, \$t, \$i) = \@_; $code_obj->{subs}{$key}; }";
+        $template->{'subs'}{$key} = eval "sub { my (\$t, \$c, \$p, \$t, \$i) = \@_; $code_obj->{subs}{$key}; }";
     }
 
     return $template;
