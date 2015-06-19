@@ -40,7 +40,7 @@ sub r {
 
 sub v {
     my ($self, $str) = @_;
-    $str = $self->t($str);
+    $str = defined($str) ? $str : "";
 
     if ($str =~ m{[&<>'"]}) {
         $str =~ s/&/&amp;/g;
