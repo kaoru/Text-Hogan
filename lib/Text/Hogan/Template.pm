@@ -53,7 +53,7 @@ sub v {
 
 sub t {
     my ($self, $str) = @_;
-    return $str // "";
+    return defined($str) ? $str : "";
 }
 
 sub render {
@@ -395,7 +395,7 @@ sub create_specialized_partial {
 
 sub coerce_to_string {
     my ($str) = @_;
-    return $str // "";
+    return defined($str) ? $str : "";
 }
 
 1;

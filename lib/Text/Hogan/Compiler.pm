@@ -519,13 +519,15 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} // ""), !!$options->{'model_get'});
+    return join("||", $text, !!$options->{'as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""), !!$options->{'model_get'});
 }
 
 sub compile {
     my ($self, $text, $options) = @_;
     $options ||= {};
-    $text //= "";
+    if (!defined $text) {
+        $text = "";
+    }
     my $key = cache_key($text, $options);
     my $template = $cache{$key};
 
