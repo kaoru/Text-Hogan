@@ -1,5 +1,10 @@
 Revision history for perl module Text::Hogan
 
+0.06 2015-06-22
+    * Small performance improvements
+    * Die on lambda section to make very clear they are not supported
+    * Use custom MinimumPerl test_finder to skip YAML spec files
+
 0.05 2015-06-19
     * use Github as a bug tracker rather than rt.cpan.org
 
