@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+0.07 2015-06-23
+    * Documentation! POD! Woo!
+
 0.06 2015-06-22
     * Small performance improvements
     * Die on lambda section to make very clear they are not supported
