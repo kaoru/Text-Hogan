@@ -415,7 +415,30 @@ Text::Hogan::Template - represent and render compiled templates
 
 Use Text::Hogan::Compiler to create Template objects.
 
-I'll document this better soon.
+Then call render passing in a hashref for context.
+
+    use Text::Hogan::Compiler;
+
+    my $template = Text::Hogan::Compiler->new->compile("Hello, {{name}}!");
+
+    say $template->render({ name => $_ }) for (qw(Fred Wilma Barney Betty));
+
+Optionally takes a hashref of partials.
+
+    use Text::Hogan::Compiler;
+
+    my $template = Text::Hogan::Compiler->new->compile("{{>hello}}");
+
+    say $template->render({ name => "Dino" }, { hello => "Hello, {{name}}!" });
+
+Also optionally takes a string
+
+=head1 NOTES
+
+You can pass a subroutine reference as a value and things will happen or an
+exception will be thrown. This is half-implemented in this way because what
+hogan.js does and what the mustache spec says should happen are different. When
+they agree I will implement the feature.
 
 =head1 COPYRIGHT
 
@@ -423,7 +446,7 @@ Copyright (C) 2015 Lokku Ltd.
 
 =head1 AUTHOR
 
-Basically statement-for-statement copied from hogan.js by Twitter!
+Statement-for-statement copied from hogan.js by Twitter!
 
 Alex Balhatchet (alex@lokku.com)
 

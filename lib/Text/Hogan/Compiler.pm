@@ -566,11 +566,101 @@ Text::Hogan::Compiler - parse templates and output Perl code
 
     my $tokens   = $compiler->scan($text);
     my $tree     = $compiler->parse($scanned, $text);
-    my $template = $compiler->generate($parsed, $text);
+    my $template = $compiler->generate($tree, $text);
 
     say $template->render({ name => "Alex" });
 
-There are various options you can pass to scan, parse, generate and render but I haven't documented them yet.
+=head1 METHODS
+
+=head2 new
+
+Takes nothing, returns a Compiler object.
+
+    my $compiler = Text::Hogan::Compiler->new;
+
+=cut
+
+=head2 scan
+
+Takes template text and returns an arrayref which is a list of tokens.
+
+    my $tokens = $compiler->scan("Hello, {{name}}!");
+
+Optionally takes a string which represents different delimiters, split by
+white-space. You should never need to pass this directly, it it used to
+implement the in-template delimiter-switching functionality.
+
+    # equivalent to the above call with mustaches
+    my $tokens = Text::Hogan::Compiler->new->scan("Hello, <% name %>!", "<% %>")
+
+=head2 parse
+
+Takes the tokens returned by scan, along with the original text, and returns a
+tree structure ready to be turned into Perl code.
+
+    my $tree = $compiler->parse($tokens, $text);
+
+Optionally takes a hashref that can have a key called "selection_tags" which
+should be an arrayref. I don't know what it does. Probably something internal
+that you don't need to worry about.
+
+Note that a lot of error checking on your input gets done in this method, and
+it is pretty much the only place exceptions might be thrown. Exceptions which
+may be thrown include: "Closing tag without opener", "Missing closing tag",
+"Nesting error" and "Illegal content in < super tag".
+
+=head2 generate
+
+Takes the parsed tree and the original text and returns a Text::Hogan::Template
+object that you can call render on.
+
+    my $template = $compiler->generate($tree, $text);
+
+Optionally takes a hashref that can have a key called "as_string". If that is
+passed then instead of getting a template object back you get some stringified
+Perl code that you can cache somewhere on disk as part of your build process.
+
+    my $perl_code_as_string = $compiler->generate($tree, $text, { 'as_string' => 1 });
+
+The options hashref can have other keys which will be passed to
+Text::Hogan::Template::new among other places.
+
+=head2 compile
+
+Takes a template string and calls scan, parse and generate on it and returns
+you the Text::Hogan::Template object.
+
+    my $template = $compiler->compile("Hello, {{name}}!");
+
+Also caches templates by a sensible cache key, which can be useful if you're
+not stringifying and storing on disk or in memory anyway.
+
+Optionally takes a hashref that will be passed on to parse and generate. If the
+hashref has a key called "delimiters" then that key's value only will be passed
+to scan.
+
+    my $perl_code_as_string = $compiler->compile(
+        $text,
+        {
+            delimiters => "<% %>",
+            as_string => 1,
+        },
+    );
+
+=head1 ENCODING
+
+As long as you are consistent with your use of encoding in your template
+variables and your context variables, everything should just work. You can use
+byte strings or character strings and you'll get what you expect.
+
+However be aware that compilation is much slower when using character strings!
+The tokenization does a lot of character-by-character operations using
+substr(), length(), etc. which are much slower when operating on character
+strings than byte strings.
+
+I would still recommend you use character strings for your own sanity of
+course! Just be aware that you will gain a lot of performance by pre-compiling
+your templates using the as_string option of compile.
 
 =head1 COPYRIGHT
 
@@ -578,7 +668,7 @@ Copyright (C) 2015 Lokku Ltd.
 
 =head1 AUTHOR
 
-Basically statement-for-statement copied from hogan.js by Twitter!
+Statement-for-statement copied from hogan.js by Twitter!
 
 Alex Balhatchet (alex@lokku.com)
 

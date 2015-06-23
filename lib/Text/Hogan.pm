@@ -9,7 +9,7 @@ __END__
 
 =head1 NAME
 
-Text::Hogan -A mustache templating engine statement-for-statement cloned from hogan.js
+Text::Hogan - A mustache templating engine statement-for-statement cloned from hogan.js
 
 =head1 SYNOPSIS
 
@@ -22,13 +22,15 @@ Text::Hogan -A mustache templating engine statement-for-statement cloned from ho
 
     say $template->render({ name => "Alex" });
 
+See Text::Hogan::Compiler and Text::Hogan::Template for more details.
+
 =head1 COPYRIGHT
 
 Copyright (C) 2015 Lokku Ltd.
 
 =head1 AUTHOR
 
-Basically statement-for-statement copied from hogan.js by Twitter!
+Statement-for-statement copied from hogan.js by Twitter!
 
 Alex Balhatchet (alex@lokku.com)
 
