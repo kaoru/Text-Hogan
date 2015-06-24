@@ -431,8 +431,6 @@ Optionally takes a hashref of partials.
 
     say $template->render({ name => "Dino" }, { hello => "Hello, {{name}}!" });
 
-Also optionally takes a string
-
 =head1 NOTES
 
 You can pass a subroutine reference as a value and things will happen or an
