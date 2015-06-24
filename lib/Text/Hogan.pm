@@ -24,6 +24,19 @@ Text::Hogan - A mustache templating engine statement-for-statement cloned from h
 
 See L<Text::Hogan::Compiler|Text::Hogan::Compiler> and L<Text::Hogan::Template|Text::Hogan::Template> for more details.
 
+=head1 SEE ALSO
+
+=head2 Text::Caml
+
+L<Text::Caml|Text::Caml> is a very good mustache-like templating engine, but
+does not support pre-compilation.
+
+=head2 Template::Mustache
+
+L<Template::Mustache|Template::Mustache> is a module written by Pieter van de
+Bruggen and Ricardo Signes. Currently has no POD. Used by
+Dancer::Template::Mustache.
+
 =head1 COPYRIGHT
 
 Copyright (C) 2015 Lokku Ltd.
