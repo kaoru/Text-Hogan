@@ -22,7 +22,7 @@ Text::Hogan - A mustache templating engine statement-for-statement cloned from h
 
     say $template->render({ name => "Alex" });
 
-See Text::Hogan::Compiler and Text::Hogan::Template for more details.
+See L<Text::Hogan::Compiler|Text::Hogan::Compiler> and L<Text::Hogan::Template|Text::Hogan::Template> for more details.
 
 =head1 COPYRIGHT
 
