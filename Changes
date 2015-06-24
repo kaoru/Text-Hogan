@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+0.08 2015-06-24
+    * Further POD improvements
+
 0.07 2015-06-23
     * Documentation! POD! Woo!
 
