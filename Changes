@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+0.09 2015-06-25
+    * Document the link to hogan.js much more clearly
+
 0.08 2015-06-24
     * Further POD improvements
 
