@@ -11,6 +11,18 @@ __END__
 
 Text::Hogan - A mustache templating engine statement-for-statement cloned from hogan.js
 
+=head1 DESCRIPTION
+
+Text::Hogan is a statement-for-statement rewrite of
+L<hogan.js|http://twitter.github.io/hogan.js/> in Perl.
+
+It is a L<mustache|https://mustache.github.io/> templating engine which
+supports pre-compilation of your templates into pure Perl code, which then
+renders very quickly.
+
+It aims to pass the full L<mustache spec|https://github.com/mustache/spec>, and
+currently succeeds on all tests except lambda sections.
+
 =head1 SYNOPSIS
 
     use Text::Hogan::Compiler;
@@ -22,9 +34,21 @@ Text::Hogan - A mustache templating engine statement-for-statement cloned from h
 
     say $template->render({ name => "Alex" });
 
-See L<Text::Hogan::Compiler|Text::Hogan::Compiler> and L<Text::Hogan::Template|Text::Hogan::Template> for more details.
+See L<Text::Hogan::Compiler|Text::Hogan::Compiler> and
+L<Text::Hogan::Template|Text::Hogan::Template> for more details.
+
+=head1 TEMPLATE FORMAT
+
+The template format is documented in
+L<mustache(5)|https://mustache.github.io/mustache.5.html>.
 
 =head1 SEE ALSO
+
+=head2 hogan.js
+
+L<hogan.js|http://twitter.github.io/hogan.js/> is the original library that
+Text::Hogan is based on. It runs on Node.js and pre-compiles templates to pure
+JavaScript.
 
 =head2 Text::Caml
 
