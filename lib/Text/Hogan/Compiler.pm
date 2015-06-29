@@ -565,7 +565,7 @@ Text::Hogan::Compiler - parse templates and output Perl code
     my $text = "Hello, {{name}}!";
 
     my $tokens   = $compiler->scan($text);
-    my $tree     = $compiler->parse($scanned, $text);
+    my $tree     = $compiler->parse($tokens, $text);
     my $template = $compiler->generate($tree, $text);
 
     say $template->render({ name => "Alex" });
