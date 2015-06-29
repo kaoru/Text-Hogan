@@ -30,7 +30,6 @@ for my $file (@spec_files) {
     local $TODO;
     if ($file =~ m/~lambdas[.]yml$/) {
         $TODO = "Lambdas not yet implemented!";
-        next;
     }
 
     my $yaml = $file->slurp_utf8;
