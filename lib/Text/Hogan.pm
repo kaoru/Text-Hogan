@@ -47,8 +47,8 @@ L<mustache(5)|https://mustache.github.io/mustache.5.html>.
 =head2 hogan.js
 
 L<hogan.js|http://twitter.github.io/hogan.js/> is the original library that
-Text::Hogan is based on. It runs on Node.js and pre-compiles templates to pure
-JavaScript.
+Text::Hogan is based on. It was written and is maintained by Twitter. It runs
+on Node.js and pre-compiles templates to pure JavaScript.
 
 =head2 Text::Caml
 
@@ -60,6 +60,11 @@ does not support pre-compilation.
 L<Template::Mustache|Template::Mustache> is a module written by Pieter van de
 Bruggen and Ricardo Signes. Currently has no POD. Used by
 Dancer::Template::Mustache.
+
+=head2 Mustache::Simple
+
+I don't know anything about L<Mustache::Simple|Mustache::Simple>. It seems to
+be available on search.cpan.org but not on metacpan.org which is a bad sign.
 
 =head1 COPYRIGHT
 
