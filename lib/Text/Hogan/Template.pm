@@ -422,13 +422,6 @@ Optionally takes a hashref of partials.
 
     say $template->render({ name => "Dino" }, { hello => "Hello, {{name}}!" });
 
-=head1 NOTES
-
-You can pass a subroutine reference as a value and things will happen or an
-exception will be thrown. This is half-implemented in this way because what
-hogan.js does and what the mustache spec says should happen are different. When
-they agree I will implement the feature.
-
 =head1 COPYRIGHT
 
 Copyright (C) 2015 Lokku Ltd.

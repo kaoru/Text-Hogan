@@ -20,8 +20,7 @@ It is a L<mustache|https://mustache.github.io/> templating engine which
 supports pre-compilation of your templates into pure Perl code, which then
 renders very quickly.
 
-It aims to pass the full L<mustache spec|https://github.com/mustache/spec>, and
-currently succeeds on all tests except lambda sections.
+It passes the full L<mustache spec|https://github.com/mustache/spec>.
 
 =head1 SYNOPSIS
 
