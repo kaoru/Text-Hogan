@@ -512,7 +512,7 @@ sub walk {
 sub parse {
     my ($self, $tokens, $text, $options) = @_;
     $options ||= {};
-    return build_tree($tokens, "", [], $options->{'selection_tags'} || []);
+    return build_tree($tokens, "", [], $options->{'section_tags'} || []);
 }
 
 my %cache;
@@ -600,9 +600,9 @@ tree structure ready to be turned into Perl code.
 
     my $tree = $compiler->parse($tokens, $text);
 
-Optionally takes a hashref that can have a key called "selection_tags" which
+Optionally takes a hashref that can have a key called "section_tags" which
 should be an arrayref. I don't know what it does. Probably something internal
-that you don't need to worry about.
+related to recursive calls that you don't need to worry about.
 
 Note that a lot of error checking on your input gets done in this method, and
 it is pretty much the only place exceptions might be thrown. Exceptions which
