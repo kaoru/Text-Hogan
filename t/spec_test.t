@@ -26,10 +26,12 @@ my $data_fixer = Data::Visitor::Callback->new(
 
 my @spec_files = path("t", "specs")->children(qr/[.]yml$/);
 
-for my $file (@spec_files) {
+for my $file (sort @spec_files) {
     my $yaml = $file->slurp_utf8;
 
     my $specs = YAML::Load($yaml);
+
+    note "----- $file ", ("-" x (70-length($file)));
 
     for my $test (@{ $specs->{tests} }) {
         #
