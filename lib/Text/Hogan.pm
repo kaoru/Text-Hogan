@@ -71,7 +71,7 @@ Copyright (C) 2015 Lokku Ltd.
 
 =head1 AUTHOR
 
-Statement-for-statement copied from hogan.js by Twitter!
+Started out statement-for-statement copied from hogan.js by Twitter!
 
 Alex Balhatchet (alex@lokku.com)
 
