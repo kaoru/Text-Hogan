@@ -183,7 +183,6 @@ sub d {
     }
     my $val = $self->f($names[0], $ctx, $partials, $return_found);
 
-    my $do_model_get = $self->{'options'}{'model_get'};
     my $cx;
 
     if ($key eq '.' && (ref($ctx->[-2]) eq 'ARRAY')) {
@@ -191,7 +190,7 @@ sub d {
     }
     else {
         for (my $i = 1; $i < @names; $i++) {
-            $found = find_in_scope($names[$i], $val, $do_model_get);
+            $found = find_in_scope($names[$i], $val);
             if (defined $found) {
                 $cx = $val;
                 $val = $found;
@@ -230,11 +229,10 @@ sub f {
     my $val = 0;
     my $v = undef;
     my $found = 0;
-    my $do_model_get = $self->{'options'}{'model_get'};
 
     for (my $i = @$ctx - 1; $i >= 0; $i--) {
         $v = $ctx->[$i];
-        $val = find_in_scope($key, $v, $do_model_get);
+        $val = find_in_scope($key, $v);
         if (defined $val) {
             $found = 1;
             last;
@@ -337,15 +335,12 @@ sub sub {
 ################################################
 
 sub find_in_scope {
-    my ($key, $scope, $do_model_get) = @_;
+    my ($key, $scope) = @_;
     my $val;
 
     if ($scope && ref($scope) eq 'HASH') {
         if (defined $scope->{$key}) {
             $val = $scope->{$key};
-        }
-        elsif ($do_model_get) {
-            die "Do Model Get not implemented in Text::Hogan!";
         }
     }
 
