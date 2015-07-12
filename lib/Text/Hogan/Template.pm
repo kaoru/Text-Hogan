@@ -263,16 +263,14 @@ sub f {
 
 # higher order templates
 sub ls {
-    die "Higher Order Templates Not Supported Yet!\n";
+    my ($self, $func, $cx, $ctx, $partials, $text, $tags) = @_;
+    my $old_tags = $self->{'options'}{'delimiters'};
 
-#   my ($self, $func, $cx, $ctx, $partials, $text, $tags) = @_;
-#   my $old_tags = $self->{'options'}{'delimiters'};
-#
-#   $self->{'options'}{'delimiters'} = $tags;
-#   $self->b($self->ct(coerce_to_string($func->($self,$cx,$text,$ctx)), $cx, $partials));
-#   $self->{'options'}{'delimiters'} = $old_tags;
-#
-#   return 0;
+    $self->{'options'}{'delimiters'} = $tags;
+    $self->b($self->ct($func->($text), $cx, $partials));
+    $self->{'options'}{'delimiters'} = $old_tags;
+
+    return 0;
 }
 
 # compile text
@@ -299,25 +297,22 @@ sub fl {
 
 # method replace section
 sub ms {
-    die "Lambda Sections Not Supported Yet!\n";
-#   my ($self, $func, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
-#   my $text_source;
-#   my $cx = $ctx->[-1];
-#   my $result = $func->($self, $cx);
-#
-#   if (ref($result) eq 'CODE') {
-#       if ($inverted) {
-#           return 1;
-#       }
-#       else {
-#           $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
-#               ? $self->{'subs_text'}{$self->{'active_sub'}}
-#               : $self->{'text'};
-#           return $self->ls($result, $cx, $ctx, $partials, substr($text_source,$start,$end), $tags);
-#       }
-#   }
-#
-#   return $result;
+    my ($self, $func, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
+
+    if ($inverted) {
+        return 1;
+    }
+    else {
+        my $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
+            ? $self->{'subs_text'}{$self->{'active_sub'}}
+            : $self->{'text'};
+
+        my $s = substr($text_source,$start,($end-$start));
+
+        $self->ls($func, $ctx->[-1], $ctx, $partials, $s, $tags);
+
+        return 0;
+    }
 }
 
 # method replace variable
@@ -326,11 +321,7 @@ sub mv {
     my $cx = $ctx->[-1];
     my $result = $func->($self,$cx);
 
-    if (ref($result) eq 'CODE') {
-        return $self->ct(coerce_to_string($result->($self,$cx)), $cx, $partials);
-    }
-
-    return $result;
+    return $self->ct($result, $cx, $partials);
 }
 
 sub sub {
