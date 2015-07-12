@@ -27,11 +27,6 @@ my $data_fixer = Data::Visitor::Callback->new(
 my @spec_files = path("t", "specs")->children(qr/[.]yml$/);
 
 for my $file (@spec_files) {
-    local $TODO;
-    if ($file =~ m/~lambdas[.]yml$/) {
-        $TODO = "Lambdas not yet implemented!";
-    }
-
     my $yaml = $file->slurp_utf8;
 
     my $specs = YAML::Load($yaml);
