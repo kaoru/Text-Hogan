@@ -1,5 +1,13 @@
 Revision history for perl module Text::Hogan
 
+1.00 2015-07-12
+    * Implemented lambda sections
+      ... We now pass the whole mustache spec! Time for a 1.0 release :-)
+    * Removed "model_get" hold-over from hogan.js
+    * Add synopsis tests
+    * Small spec_test.t improvements
+    * Small POD improvements
+
 0.09 2015-06-25
     * Document the link to hogan.js much more clearly
 
