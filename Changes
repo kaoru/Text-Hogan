@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+1.01 2015-07-13
+    * Add numeric_string_as_string feature
+
 1.00 2015-07-12
     * Implemented lambda sections
       ... We now pass the whole mustache spec! Time for a 1.0 release :-)
