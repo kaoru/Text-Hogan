@@ -25,6 +25,10 @@ sub new {
 
     $self->{'buf'} = "";
 
+    $self->{'numeric_string_as_string'} = 0; # by default treat numbers as strings
+    if ($options->{'numeric_string_as_string'}){
+        $self->{'numeric_string_as_string'} = 1;
+    } 
     return $self;
 }
 
@@ -210,16 +214,23 @@ sub d {
         $val = $self->mv($val, $ctx, $partials);
         pop @$ctx;
     }
+    $val = $self->_check_for_num($val);
+    return $val;
+}
 
-    # handle numerical interpolation for decimal numbers
-    # "properly"...
-    #
-    # according to the mustache spec 1.210 should render as 1.21
-    #
+# handle numerical interpolation for decimal numbers "properly"...
+#
+# according to the mustache spec 1.210 should render as 1.21
+#
+# unless the optional numeric_string_as_string was passed
+sub _check_for_num {
+    my $self = shift;
+    my $val = shift;
+    return $val if ($self->{'numeric_string_as_string'} == 1);
+
     if (looks_like_number($val)) {
-        $val = $val + 0;
+	$val = $val + 0;
     }
-
     return $val;
 }
 
@@ -247,15 +258,7 @@ sub f {
         $val = $self->mv($val, $ctx, $partials);
     }
 
-    # handle numerical interpolation for decimal numbers
-    # "properly"...
-    #
-    # according to the mustache spec 1.210 should render as 1.21
-    #
-    if (looks_like_number($val)) {
-        $val = $val + 0;
-    }
-
+    $val = $self->_check_for_num($val);
     return $val;
 }
 

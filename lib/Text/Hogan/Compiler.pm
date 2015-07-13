@@ -519,7 +519,7 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""));
+    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""));
 }
 
 sub compile {
@@ -616,11 +616,19 @@ object that you can call render on.
 
     my $template = $compiler->generate($tree, $text);
 
-Optionally takes a hashref that can have a key called "as_string". If that is
-passed then instead of getting a template object back you get some stringified
-Perl code that you can cache somewhere on disk as part of your build process.
+Optionally takes a hashref that can have 
+
+- a key "as_string". If that is passed then instead of getting a template object 
+back you get some stringified Perl code that you can cache somewhere on 
+disk as part of your build process.
 
     my $perl_code_as_string = $compiler->generate($tree, $text, { 'as_string' => 1 });
+
+- a key "numeric_string_as_string". If that is passed output that looks like a number
+is NOT converted into a number (ie "01234" is NOT converted to "1234")
+
+    my $perl_code_as_string = $compiler->generate($tree, $text, { 'numeric_string_as_string' => 1 });
+
 
 The options hashref can have other keys which will be passed to
 Text::Hogan::Template::new among other places.
