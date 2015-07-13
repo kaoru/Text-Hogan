@@ -28,7 +28,7 @@ sub new {
     $self->{'numeric_string_as_string'} = 0; # by default treat numbers as strings
     if ($options->{'numeric_string_as_string'}){
         $self->{'numeric_string_as_string'} = 1;
-    } 
+    }
     return $self;
 }
 

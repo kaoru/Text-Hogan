@@ -33,7 +33,7 @@ use Text::Hogan::Compiler;
         is
             $template->render({ name => $_ }),
             "Hello, $_!",
-            "Text::Hogan::Template synopsis works - $_";
+            "Text::Hogan::Template synopsis works - $_ (numeric_string_as_string)";
     }
 }
 

@@ -616,10 +616,10 @@ object that you can call render on.
 
     my $template = $compiler->generate($tree, $text);
 
-Optionally takes a hashref that can have 
+Optionally takes a hashref that can have
 
-- a key "as_string". If that is passed then instead of getting a template object 
-back you get some stringified Perl code that you can cache somewhere on 
+- a key "as_string". If that is passed then instead of getting a template object
+back you get some stringified Perl code that you can cache somewhere on
 disk as part of your build process.
 
     my $perl_code_as_string = $compiler->generate($tree, $text, { 'as_string' => 1 });
