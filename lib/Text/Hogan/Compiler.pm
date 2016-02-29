@@ -32,7 +32,7 @@ sub new {
 }
 
 sub scan {
-    my ($self, $text, $delimiters) = @_;
+    my ($self, $text, $options) = @_;
 
     my $len = length $text;
     my ($IN_TEXT, $IN_TAG_TYPE, $IN_TAG) = (0, 1, 2);
@@ -121,8 +121,8 @@ sub scan {
         return $close_index + length($close) - 1;
     };
 
-    if ($delimiters) {
-        $delimiters = [ split ' ', $delimiters ];
+    if ($options->{'delimiters'}) {
+        $delimiters = [ split ' ', $options->{'delimiters'} ];
         $otag = $delimiters->[0];
         $ctag = $delimiters->[1];
     }
@@ -145,7 +145,7 @@ sub scan {
         }
         elsif ($state eq $IN_TAG_TYPE) {
             $i += length($otag) - 1;
-            $i += 1 while(char_at($text, $i+1) eq ' ');
+            $i += 1 while($options->{'allow_whitespace_before_hashmark'} and (char_at($text, $i+1) eq ' '));
             $tag = $tags{char_at($text,$i + 1)};
             $tag_type = $tag ? char_at($text, $i + 1) : '_v';
             if ($tag_type eq '=') {
@@ -520,7 +520,7 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""));
+    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""), ($options->{'allow_whitespace_before_hashmark'} || 0));
 }
 
 sub compile {
@@ -542,7 +542,7 @@ sub compile {
 
     $template = $self->generate(
         $self->parse(
-            $self->scan($text, $options->{'delimiters'}), $text, $options
+            $self->scan($text, $options), $text, $options
         ), $text, $options
     );
 
