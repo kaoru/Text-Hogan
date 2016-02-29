@@ -145,6 +145,7 @@ sub scan {
         }
         elsif ($state eq $IN_TAG_TYPE) {
             $i += length($otag) - 1;
+            $i += 1 while(char_at($text, $i+1) eq ' ');
             $tag = $tags{char_at($text,$i + 1)};
             $tag_type = $tag ? char_at($text, $i + 1) : '_v';
             if ($tag_type eq '=') {
