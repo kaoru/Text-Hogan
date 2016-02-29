@@ -122,7 +122,7 @@ sub scan {
     };
 
     if ($options->{'delimiters'}) {
-        $delimiters = [ split ' ', $options->{'delimiters'} ];
+        my $delimiters = [ split ' ', $options->{'delimiters'} ];
         $otag = $delimiters->[0];
         $ctag = $delimiters->[1];
     }
