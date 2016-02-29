@@ -587,12 +587,18 @@ Takes template text and returns an arrayref which is a list of tokens.
 
     my $tokens = $compiler->scan("Hello, {{name}}!");
 
-Optionally takes a string which represents different delimiters, split by
-white-space. You should never need to pass this directly, it it used to
-implement the in-template delimiter-switching functionality.
+Optionally takes a hashref with options. 'delimiters' is a string which
+represents different delimiters, split by white-space. You should never
+need to pass this directly, it it used to implement the in-template
+delimiter-switching functionality.
 
     # equivalent to the above call with mustaches
-    my $tokens = Text::Hogan::Compiler->new->scan("Hello, <% name %>!", "<% %>")
+    my $tokens = Text::Hogan::Compiler->new->scan("Hello, <% name %>!", { delimiters => "<% %>" });
+
+'allow_whitespace_before_hashmark' is a boolean. If true,tags are allowed
+to have space(s) between the delimiters and the opening sigil ('#', '/', '^', '<', etc.).
+
+	my $tokens = Text::Hogan::Compiler->new->scan("Hello{{ # foo }}, again{{ / foo }}.", { allow_whitespace_before_hashmark => 1 });
 
 =head2 parse
 
@@ -644,15 +650,14 @@ you the Text::Hogan::Template object.
 Also caches templates by a sensible cache key, which can be useful if you're
 not stringifying and storing on disk or in memory anyway.
 
-Optionally takes a hashref that will be passed on to parse and generate. If the
-hashref has a key called "delimiters" then that key's value only will be passed
-to scan.
+Optionally takes a hashref that will be passed on to scan, parse, and generate.
 
     my $perl_code_as_string = $compiler->compile(
         $text,
         {
             delimiters => "<% %>",
             as_string => 1,
+            allow_whitespace_before_hashmark => 1,
         },
     );
 
