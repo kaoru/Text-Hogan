@@ -671,14 +671,10 @@ course! Just be aware that you will gain a lot of performance by pre-compiling
 your templates, either using the as_string option of compile or just using a
 compile-once render-lots pattern in your code.
 
-=head1 COPYRIGHT
-
-Copyright (C) 2015 Lokku Ltd.
-
 =head1 AUTHOR
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@lokku.com)
+Alex Balhatchet (alex@balhatchet.net)
 
 =cut

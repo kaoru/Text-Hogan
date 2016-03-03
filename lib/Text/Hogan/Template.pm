@@ -420,14 +420,10 @@ Optionally takes a hashref of partials.
 
     say $template->render({ name => "Dino" }, { hello => "Hello, {{name}}!" });
 
-=head1 COPYRIGHT
-
-Copyright (C) 2015 Lokku Ltd.
-
 =head1 AUTHOR
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@lokku.com)
+Alex Balhatchet (alex@balhatchet.net)
 
 =cut

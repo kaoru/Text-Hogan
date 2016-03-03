@@ -65,14 +65,10 @@ Dancer::Template::Mustache.
 I don't know anything about L<Mustache::Simple|Mustache::Simple>. It seems to
 be available on search.cpan.org but not on metacpan.org which is a bad sign.
 
-=head1 COPYRIGHT
-
-Copyright (C) 2015 Lokku Ltd.
-
 =head1 AUTHOR
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@lokku.com)
+Alex Balhatchet (alex@balhatchet.net)
 
 =cut
