@@ -1,7 +1,9 @@
 Revision history for perl module Text::Hogan
 
-1.02 2016-02-29
+1.02 2016-03-03
+    * Transfer ownership from company to individual
     * Add allow_whitespace_before_hashmark feature
+      Thanks to Ricky Morse (remorse on Github)
 
 1.01 2015-07-13
     * Add numeric_string_as_string feature
