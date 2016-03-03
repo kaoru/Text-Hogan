@@ -32,7 +32,7 @@ sub new {
 }
 
 sub scan {
-    my ($self, $text, $delimiters) = @_;
+    my ($self, $text, $options) = @_;
 
     my $len = length $text;
     my ($IN_TEXT, $IN_TAG_TYPE, $IN_TAG) = (0, 1, 2);
@@ -121,8 +121,8 @@ sub scan {
         return $close_index + length($close) - 1;
     };
 
-    if ($delimiters) {
-        $delimiters = [ split ' ', $delimiters ];
+    if ($options->{'delimiters'}) {
+        my $delimiters = [ split ' ', $options->{'delimiters'} ];
         $otag = $delimiters->[0];
         $ctag = $delimiters->[1];
     }
@@ -145,6 +145,7 @@ sub scan {
         }
         elsif ($state eq $IN_TAG_TYPE) {
             $i += length($otag) - 1;
+            $i += 1 while($options->{'allow_whitespace_before_hashmark'} and (char_at($text, $i+1) eq ' '));
             $tag = $tags{char_at($text,$i + 1)};
             $tag_type = $tag ? char_at($text, $i + 1) : '_v';
             if ($tag_type eq '=') {
@@ -519,7 +520,7 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""));
+    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""), ($options->{'allow_whitespace_before_hashmark'} || 0));
 }
 
 sub compile {
@@ -541,7 +542,7 @@ sub compile {
 
     $template = $self->generate(
         $self->parse(
-            $self->scan($text, $options->{'delimiters'}), $text, $options
+            $self->scan($text, $options), $text, $options
         ), $text, $options
     );
 
@@ -586,12 +587,18 @@ Takes template text and returns an arrayref which is a list of tokens.
 
     my $tokens = $compiler->scan("Hello, {{name}}!");
 
-Optionally takes a string which represents different delimiters, split by
-white-space. You should never need to pass this directly, it it used to
-implement the in-template delimiter-switching functionality.
+Optionally takes a hashref with options. 'delimiters' is a string which
+represents different delimiters, split by white-space. You should never
+need to pass this directly, it it used to implement the in-template
+delimiter-switching functionality.
 
     # equivalent to the above call with mustaches
-    my $tokens = Text::Hogan::Compiler->new->scan("Hello, <% name %>!", "<% %>")
+    my $tokens = Text::Hogan::Compiler->new->scan("Hello, <% name %>!", { delimiters => "<% %>" });
+
+'allow_whitespace_before_hashmark' is a boolean. If true,tags are allowed
+to have space(s) between the delimiters and the opening sigil ('#', '/', '^', '<', etc.).
+
+	my $tokens = Text::Hogan::Compiler->new->scan("Hello{{ # foo }}, again{{ / foo }}.", { allow_whitespace_before_hashmark => 1 });
 
 =head2 parse
 
@@ -643,15 +650,14 @@ you the Text::Hogan::Template object.
 Also caches templates by a sensible cache key, which can be useful if you're
 not stringifying and storing on disk or in memory anyway.
 
-Optionally takes a hashref that will be passed on to parse and generate. If the
-hashref has a key called "delimiters" then that key's value only will be passed
-to scan.
+Optionally takes a hashref that will be passed on to scan, parse, and generate.
 
     my $perl_code_as_string = $compiler->compile(
         $text,
         {
             delimiters => "<% %>",
             as_string => 1,
+            allow_whitespace_before_hashmark => 1,
         },
     );
 
