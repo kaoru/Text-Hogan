@@ -33,9 +33,10 @@ sub new {
 }
 
 sub scan {
-    my ($self, $text, $options) = @_;
+    my ($self, $text_orig, $options) = @_;
+    my $text = [ split //, $text_orig ];
 
-    my $len = length $text;
+    my $len = scalar(@$text);
     my ($IN_TEXT, $IN_TAG_TYPE, $IN_TAG) = (0, 1, 2);
     my $state = $IN_TEXT;
     my $tag_type = undef;
@@ -91,7 +92,8 @@ sub scan {
     };
 
     my $change_delimiters = sub {
-        my ($text, $index) = @_;
+        my ($text_orig, $index) = @_;
+        my $text = join('' => @$text_orig);
 
         my $close = '=' . $ctag;
         my $close_index = index($text, $close, $index);
@@ -401,7 +403,12 @@ sub esc {
 
 sub char_at {
     my ($text, $index) = @_;
-    return substr($text, $index, 1);
+    if (ref($text) eq 'ARRAY') {
+        return $text->[$index];
+    }
+    else {
+        return substr($text, $index, 1);
+    }
 }
 
 sub choose_method {
@@ -594,7 +601,7 @@ delimiter-switching functionality.
 'allow_whitespace_before_hashmark' is a boolean. If true,tags are allowed
 to have space(s) between the delimiters and the opening sigil ('#', '/', '^', '<', etc.).
 
-	my $tokens = Text::Hogan::Compiler->new->scan("Hello{{ # foo }}, again{{ / foo }}.", { allow_whitespace_before_hashmark => 1 });
+    my $tokens = Text::Hogan::Compiler->new->scan("Hello{{ # foo }}, again{{ / foo }}.", { allow_whitespace_before_hashmark => 1 });
 
 =head2 parse
 
