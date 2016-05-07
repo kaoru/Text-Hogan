@@ -1,5 +1,8 @@
 Revision history for perl module Text::Hogan
 
+1.03 2016-05-07
+    * SEE ALSO documentation update
+
 1.02 2016-03-03
     * Transfer ownership from company to individual
     * Add allow_whitespace_before_hashmark feature
