@@ -57,8 +57,7 @@ does not support pre-compilation.
 =head2 Template::Mustache
 
 L<Template::Mustache|Template::Mustache> is a module written by Pieter van de
-Bruggen and Ricardo Signes. Currently has no POD. Used by
-Dancer::Template::Mustache.
+Bruggen. Currently has no POD. Used by Dancer::Template::Mustache.
 
 =head2 Mustache::Simple
 
