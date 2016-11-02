@@ -40,7 +40,7 @@ sub scan {
     my $tag_type = undef;
     my $tag = undef;
     my $buf = "";
-    my $tokens = [];
+    my @tokens;
     my $seen_tag = 0;
     my $i = 0;
     my $line_start = 0;
@@ -48,17 +48,17 @@ sub scan {
 
     my $add_buf = sub {
         if (length $buf > 0) {
-            push @$tokens, { 'tag' => '_t', 'text' => $buf };
+            push @tokens, { 'tag' => '_t', 'text' => $buf };
             $buf = "";
         }
     };
 
     my $line_is_whitespace = sub {
         my $is_all_whitespace = 1;
-        for (my $j = $line_start; $j < @$tokens; $j++) {
+        for (my $j = $line_start; $j < @tokens; $j++) {
             $is_all_whitespace =
-                ($tags{$tokens->[$j]{'tag'}} < $tags{'_v'}) ||
-                ($tokens->[$j]{'tag'} eq '_t' && $tokens->[$j]{'text'} !~ $r_is_whitespace);
+                ($tags{$tokens[$j]{'tag'}} < $tags{'_v'}) ||
+                ($tokens[$j]{'tag'} eq '_t' && $tokens[$j]{'text'} !~ $r_is_whitespace);
             if (!$is_all_whitespace) {
                 return 0;
             }
@@ -72,21 +72,21 @@ sub scan {
         $add_buf->();
 
         if ($have_seen_tag && $line_is_whitespace->()) {
-            for (my $j = $line_start, my $next; $j < @$tokens; $j++) {
-                if ($tokens->[$j]{'text'}) {
-                    if (($next = $tokens->[$j+1]) && $next->{'tag'} eq '>') {
-                        $next->{'indent'} = "".$tokens->[$j]{'text'};
+            for (my $j = $line_start, my $next; $j < @tokens; $j++) {
+                if ($tokens[$j]{'text'}) {
+                    if (($next = $tokens[$j+1]) && $next->{'tag'} eq '>') {
+                        $next->{'indent'} = "".$tokens[$j]{'text'};
                     }
-                    splice(@$tokens,$j,1);
+                    splice(@tokens,$j,1);
                 }
             }
         }
         elsif (!$no_new_line) {
-            push @$tokens, { 'tag' => "\n" };
+            push @tokens, { 'tag' => "\n" };
         }
 
         $seen_tag = 0;
-        $line_start = scalar @$tokens;
+        $line_start = scalar @tokens;
     };
 
     my $change_delimiters = sub {
@@ -95,7 +95,7 @@ sub scan {
         my $close = '=' . $ctag;
         my $close_index = index($text, $close, $index);
         my $offset = index($text, '=', $index) + 1;
-        my $delimiters = [
+        my @delimiters = (
             split ' ', trim(
                 # WARNING
                 #
@@ -113,18 +113,18 @@ sub scan {
                 #
                 substr($text, $offset, $close_index - $offset)
             )
-        ];
+        );
 
-        $otag = $delimiters->[0];
-        $ctag = $delimiters->[-1];
+        $otag = $delimiters[0];
+        $ctag = $delimiters[-1];
 
         return $close_index + length($close) - 1;
     };
 
     if ($options->{'delimiters'}) {
-        my $delimiters = [ split ' ', $options->{'delimiters'} ];
-        $otag = $delimiters->[0];
-        $ctag = $delimiters->[1];
+        my @delimiters = split ' ', $options->{'delimiters'};
+        $otag = $delimiters[0];
+        $ctag = $delimiters[1];
     }
 
     for (my $i = 0; $i < $len; $i++) {
@@ -162,7 +162,7 @@ sub scan {
         }
         else {
             if (tag_change($ctag, $text, $i)) {
-                push @$tokens, {
+                push @tokens, {
                     'tag'   => $tag_type,
                     'n'     => trim($buf),
                     'otag'  => $otag,
@@ -177,7 +177,7 @@ sub scan {
                         $i++;
                     }
                     else {
-                        clean_triple_stache($tokens->[-1]);
+                        clean_triple_stache($tokens[-1]);
                     }
                 }
             }
@@ -189,7 +189,7 @@ sub scan {
 
     $filter_line->($seen_tag, 1);
 
-    return $tokens;
+    return \@tokens;
 }
 
 sub clean_triple_stache {
@@ -227,7 +227,7 @@ my %allowed_in_super = (
 
 sub build_tree {
     my ($tokens, $kind, $stack, $custom_tags) = @_;
-    my ($instructions, $opener, $tail, $token) = ([], undef, undef, undef);
+    my (@instructions, $opener, $tail, $token);
 
     $tail = $stack->[-1];
 
@@ -251,20 +251,20 @@ sub build_tree {
                 die "Nesting error: $opener->{'n'} vs $token->{'n'}";
             }
             $opener->{'end'} = $token->{'i'};
-            return $instructions;
+            return \@instructions;
         }
         elsif ($token->{'tag'} eq "\n") {
             $token->{'last'} = (@$tokens == 0) || ($tokens->[0]{'tag'} eq "\n");
         }
 
-        push @$instructions, $token;
+        push @instructions, $token;
     }
 
     if (@$stack) {
         die "Missing closing tag: ", pop(@$stack)->{'n'};
     }
 
-    return $instructions;
+    return \@instructions;
 }
 
 sub is_opener {
@@ -295,12 +295,12 @@ sub is_closer {
 sub stringify_substitutions {
     my $obj = shift;
 
-    my $items = [];
+    my @items;
     for my $key (sort keys %$obj) {
-        push @$items, sprintf('"%s" => sub { my ($self,$c,$p,$t,$i) = @_; %s }', esc($key), $obj->{$key});
+        push @items, sprintf('"%s" => sub { my ($self,$c,$p,$t,$i) = @_; %s }', esc($key), $obj->{$key});
     }
 
-    return sprintf("{ %s }", join(", ", @$items));
+    return sprintf("{ %s }", join(", ", @items));
 }
 
 sub stringify_partials {
