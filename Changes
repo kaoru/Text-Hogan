@@ -1,5 +1,9 @@
 Revision history for perl module Text::Hogan
 
+1.04 2016-11-02
+    * Prefer array over arrayref (thanks Tom Hukins!)
+    * Add copyright_holder to dist.ini (thanks Tom Hukins!)
+
 1.03 2016-05-07
     * SEE ALSO documentation update
 
