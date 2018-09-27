@@ -304,11 +304,11 @@ sub stringify_substitutions {
 }
 
 sub stringify_partials {
-    my $code_obj;
+    my $code_obj = shift;
 
     my @partials;
     for my $key (sort keys %{ $code_obj->{'partials'} }) {
-        push @partials, sprintf('"%s" => { "name" => "%s", %s }',
+        push @partials, sprintf('"%s" => { "name" => "%s", %s }', $key,
             esc($code_obj->{'partials'}{$key}{'name'}),
             stringify_partials($code_obj->{'partials'}{$key})
         );
@@ -322,7 +322,7 @@ sub stringify_partials {
 
 sub stringify {
     my ($self,$code_obj, $text, $options) = @_;
-    return sprintf('{ code => sub { my ($self,$c,$p,$i) = @_; %s }, %s }',
+    return sprintf('{ code => sub { my ($t,$c,$p,$i) = @_; %s }, %s }',
         wrap_main($code_obj->{'code'}),
         stringify_partials($code_obj)
     );
