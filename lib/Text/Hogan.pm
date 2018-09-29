@@ -61,8 +61,7 @@ Bruggen. Currently has no POD. Used by Dancer::Template::Mustache.
 
 =head2 Mustache::Simple
 
-I don't know anything about L<Mustache::Simple|Mustache::Simple>. It seems to
-be available on search.cpan.org but not on metacpan.org which is a bad sign.
+L<Mustache::Simple|Mustache::Simple> is a module written by Cliff Stanford.
 
 =head1 AUTHOR
 
