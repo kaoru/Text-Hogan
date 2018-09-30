@@ -51,18 +51,22 @@ on Node.js and pre-compiles templates to pure JavaScript.
 
 =head2 Text::Caml
 
-L<Text::Caml|Text::Caml> is a very good mustache-like templating engine, but
-does not support pre-compilation.
+L<Text::Caml|Text::Caml> supports searching for partials by file name, by
+default .caml but that can be configured.
 
 =head2 Template::Mustache
 
-L<Template::Mustache|Template::Mustache> is a module written by Pieter van de
-Bruggen. Currently has no POD. Used by Dancer::Template::Mustache.
+L<Template::Mustache|Template::Mustache> is used by Dancer::Template::Mustache
+and Dancer2::Template::Mustache. It supports compile once, render many times,
+but does not allow dumping the compiled form to disk.
 
 =head2 Mustache::Simple
 
-I don't know anything about L<Mustache::Simple|Mustache::Simple>. It seems to
-be available on search.cpan.org but not on metacpan.org which is a bad sign.
+L<Mustache::Simple|Mustache::Simple> largely supports the Mustache spec, but
+skips the whitespace and decimal tests (its behaviour with decimals is the same
+as Text::Hogan with 'numeric_string_as_string' option enabled.) It supports
+passing objects with getters to the context hash, so that {{name}} can be
+rendered from $object->name if $object->can('name') returns true.
 
 =head1 AUTHOR
 
