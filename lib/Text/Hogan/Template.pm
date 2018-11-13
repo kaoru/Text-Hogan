@@ -200,17 +200,15 @@ sub d {
         }
     }
 
-    if ($return_found && !$val) {
-        return 0;
-    }
+    return 0 if $return_found && !$val;
 
     if (!$return_found && ref($val) eq 'CODE') {
         push @$ctx, $cx;
         $val = $self->mv($val, $ctx, $partials);
         pop @$ctx;
     }
-    $val = $self->_check_for_num($val);
-    return $val;
+
+    return $self->_check_for_num($val);
 }
 
 # handle numerical interpolation for decimal numbers "properly"...
