@@ -493,10 +493,7 @@ sub triple_stache {
     );
 }
 
-sub twrite {
-    my ($s) = @_;
-    return sprintf('$t->b(%s);', $s);
-}
+sub twrite { sprintf '$t->b(%s);', @_ }
 
 sub walk {
     my ($nodelist, $context) = @_;
