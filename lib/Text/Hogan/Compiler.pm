@@ -2,6 +2,7 @@ package Text::Hogan::Compiler;
 
 use Text::Hogan::Template;
 
+use 5.10.0;
 use strict;
 use warnings;
 
@@ -527,9 +528,9 @@ sub cache_key {
 sub compile {
     my ($self, $text, $options) = @_;
     $options ||= {};
-    if (!defined $text) {
-        $text = "";
-    }
+
+    $text //= "";
+
     my $key = cache_key($text, $options);
     my $template = $cache{$key};
 
