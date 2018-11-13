@@ -133,8 +133,8 @@ sub rs {
         return;
     }
 
-    for (my $i = 0; $i < @$tail; $i++) {
-        push @$context, $tail->[$i];
+    for my $t (@$tail) {
+        push @$context, $t;
         $section->($context, $partials, $self);
         pop @$context;
     }
