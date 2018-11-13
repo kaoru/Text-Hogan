@@ -229,29 +229,24 @@ sub _check_for_num {
 # find values with normal names
 sub f {
     my ($self, $key, $ctx, $partials, $return_found) = @_;
-    my $val = 0;
-    my $v = undef;
-    my $found = 0;
+    my ( $val, $found ) = ( 0 );
 
-    for (my $i = @$ctx - 1; $i >= 0; $i--) {
-        $v = $ctx->[$i];
+    for my $v ( reverse @$ctx ) {
         $val = find_in_scope($key, $v);
-        if (defined $val) {
-            $found = 1;
-            last;
-        }
+
+        next unless defined $val;
+
+        $found = 1;
+        last;
     }
 
-    if (!$found) {
-        return $return_found ? 0 : "";
-    }
+    return $return_found ? 0 : "" unless $found;
 
     if (!$return_found && (ref($val) eq 'CODE')) {
         $val = $self->mv($val, $ctx, $partials);
     }
 
-    $val = $self->_check_for_num($val);
-    return $val;
+    return $self->_check_for_num($val);
 }
 
 # higher order templates
