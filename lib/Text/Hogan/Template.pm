@@ -178,13 +178,8 @@ sub d {
     # > ".".split(".")
     # [ '', '' ]
     #
-    my @names;
-    if ($key eq '.') {
-        @names = ("", "");
-    }
-    else {
-        @names = split m/[.]/, $key;
-    }
+    my @names = $key eq '.' ? ( '' ) x 2 : split /\./, $key;
+
     my $val = $self->f($names[0], $ctx, $partials, $return_found);
 
     my $cx;
