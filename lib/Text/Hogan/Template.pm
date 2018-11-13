@@ -264,9 +264,10 @@ sub ls {
 # compile text
 sub ct {
     my ($self, $text, $cx, $partials) = @_;
-    if ($self->{'options'}{'disable_lambda'}) {
-        die "Lambda features disabled";
-    }
+
+    die "Lambda features disabled"
+        if $self->{'options'}{'disable_lambda'};
+
     return $self->{'c'}->compile($text, $self->{'options'})->render($cx, $partials);
 }
 
