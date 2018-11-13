@@ -87,15 +87,12 @@ sub ep {
     }
 
     if (!ref($template)) {
-        if (!$self->{'c'}) {
-            die "No compiler available";
-        }
+        die "No compiler available" unless $self->{'c'};
+        
         $template = $self->{'c'}->compile($template, $self->{'options'});
     }
 
-    if (!$template) {
-        return undef;
-    }
+    return undef unless $template;
 
     $self->{'partials'}{$symbol}{'base'} = $template;
 
