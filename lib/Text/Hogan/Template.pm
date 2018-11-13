@@ -7,29 +7,20 @@ use Scalar::Util qw(looks_like_number);
 use Clone qw(clone);
 
 sub new {
-    my $orig = shift;
-    my ($code_obj, $text, $compiler, $options) = @_;
+    my ($orig, $code_obj, $text, $compiler, $options) = @_;
 
     $code_obj ||= {};
 
-    my $class = ref($orig) || $orig;
-
-    my $self = bless {}, $class;
-
-    $self->{'r'} = $code_obj->{'code'} || (ref($orig) && $orig->{'r'});
-    $self->{'c'} = $compiler;
-    $self->{'options'} = $options || {};
-    $self->{'text'} = $text || "";
-    $self->{'partials'} = $code_obj->{'partials'} || {};
-    $self->{'subs'} = $code_obj->{'subs'} || {};
-
-    $self->{'buf'} = "";
-
-    $self->{'numeric_string_as_string'} = 0; # by default treat numbers as strings
-    if ($options->{'numeric_string_as_string'}){
-        $self->{'numeric_string_as_string'} = 1;
-    }
-    return $self;
+    return bless {
+        r   => $code_obj->{'code'} || (ref($orig) && $orig->{'r'}),
+        c   => $compiler,
+        buf => "",
+        options  => $options || {},
+        text     => $text || "",
+        partials => $code_obj->{'partials'} || {},
+        subs     => $code_obj->{'subs'} || {},
+        numeric_string_as_string => !!$options->{'numeric_string_as_string'},
+    }, ref($orig)||$orig;
 }
 
 sub r {
