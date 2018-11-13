@@ -144,9 +144,8 @@ sub rs {
 sub s {
     my ($self, $val, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
     my $pass;
-    if ((ref($val) eq 'ARRAY') && !@$val) {
-        return 0;
-    }
+
+    return 0 if (ref($val) eq 'ARRAY') && !@$val;
 
     if (ref($val) eq 'CODE') {
         $val = $self->ms($val, $ctx, $partials, $inverted, $start, $end, $tags);
