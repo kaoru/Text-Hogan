@@ -221,9 +221,8 @@ sub _check_for_num {
     my $val = shift;
     return $val if ($self->{'numeric_string_as_string'} == 1);
 
-    if (looks_like_number($val)) {
-	$val = $val + 0;
-    }
+    $val += 0 if looks_like_number($val);
+
     return $val;
 }
 
