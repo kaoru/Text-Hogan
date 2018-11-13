@@ -300,20 +300,17 @@ sub fl {
 sub ms {
     my ($self, $func, $ctx, $partials, $inverted, $start, $end, $tags) = @_;
 
-    if ($inverted) {
-        return 1;
-    }
-    else {
-        my $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
-            ? $self->{'subs_text'}{$self->{'active_sub'}}
-            : $self->{'text'};
+    return 1 if $inverted;
 
-        my $s = substr($text_source,$start,($end-$start));
+    my $text_source = ($self->{'active_sub'} && $self->{'subs_text'} && $self->{'subs_text'}{$self->{'active_sub'}})
+        ? $self->{'subs_text'}{$self->{'active_sub'}}
+        : $self->{'text'};
 
-        $self->ls($func, $ctx->[-1], $ctx, $partials, $s, $tags);
+    my $s = substr($text_source,$start,($end-$start));
 
-        return 0;
-    }
+    $self->ls($func, $ctx->[-1], $ctx, $partials, $s, $tags);
+
+    return 0;
 }
 
 # method replace variable
