@@ -339,15 +339,8 @@ sub sub {
 
 sub find_in_scope {
     my ($key, $scope) = @_;
-    my $val;
 
-    if ($scope && ref($scope) eq 'HASH') {
-        if (defined $scope->{$key}) {
-            $val = $scope->{$key};
-        }
-    }
-
-    return $val;
+    return eval { $scope->{$key} };
 }
 
 sub create_specialized_partial {
