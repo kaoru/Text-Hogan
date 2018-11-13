@@ -42,17 +42,21 @@ sub r {
     return "";
 }
 
+my %mapping = ( 
+    '&' => '&amp;',
+    '<' => '&lt;',
+    '>' => '&gt;',
+    q{'} => '&#39;',
+    '"' => '&quot;',
+);
+
 sub v {
     my ($self, $str) = @_;
-    $str = defined($str) ? $str : "";
+    $str //= "";
 
-    if ($str =~ m{[&<>'"]}) {
-        $str =~ s/&/&amp;/g;
-        $str =~ s/</&lt;/g;
-        $str =~ s/>/&gt;/g;
-        $str =~ s/'/&#39;/g;
-        $str =~ s/"/&quot;/g;
-    }
+    my $re = join '', '[', ( sort keys %mapping ), ']';
+
+    $str =~ s/($re)/$mapping{$1}/ge;
 
     return $str;
 }
@@ -188,8 +192,8 @@ sub d {
         $val = $ctx->[-1];
     }
     else {
-        for (my $i = 1; $i < @names; $i++) {
-            $found = find_in_scope($names[$i], $val);
+        for my $name (@names[1..$#names] ) {
+            $found = find_in_scope($name, $val);
             if (defined $found) {
                 $cx = $val;
                 $val = $found;
