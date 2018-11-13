@@ -432,10 +432,7 @@ my %codegen = (
         $context->{'code'} .= sprintf('if($t->s($t->%s("%s",$c,$p,1),$c,$p,0,%s,%s,"%s %s")) { $t->rs($c,$p,sub { my ($c,$p,$t) = @_;',
             choose_method($node->{'n'}),
             esc($node->{'n'}),
-            $node->{'i'},
-            $node->{'end'},
-            $node->{'otag'},
-            $node->{'ctag'}
+            @{$node}{qw/ i end otag ctag /},
         );
         walk($node->{'nodes'}, $context);
         $context->{'code'} .= '}); pop @$c;}';
