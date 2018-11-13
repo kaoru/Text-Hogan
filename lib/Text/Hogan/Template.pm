@@ -327,12 +327,11 @@ sub mv {
 
 sub sub {
     my ($self, $name, $context, $partials, $indent) = @_;
-    my $f = $self->{'subs'}{$name};
-    if ($f) {
-        $self->{'active_sub'} = $name;
-        $f->($context,$partials,$self,$indent);
-        $self->{'active_sub'} = 0;
-    }
+    my $f = $self->{'subs'}{$name} or return;
+
+    $self->{'active_sub'} = $name;
+    $f->($context,$partials,$self,$indent);
+    $self->{'active_sub'} = 0;
 }
 
 ################################################
