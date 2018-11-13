@@ -118,10 +118,8 @@ sub ep {
 # tries to find a partial in the current scope and render it
 sub rp {
     my ($self, $symbol, $context, $partials, $indent) = @_;
-    my $partial = $self->ep($symbol, $partials);
-    if (!$partial) {
-        return "";
-    }
+
+    my $partial = $self->ep($symbol, $partials) or return "";
 
     return $partial->ri($context, $partials, $indent);
 }
