@@ -98,9 +98,8 @@ sub ep {
 
     if ($partial->{'subs'}) {
         # make sure we consider parent template now
-        if (!$partials->{'stack_text'}) {
-            $partials->{'stack_text'} = {};
-        }
+        $partials->{'stack_text'} ||= {};
+
         for my $key (sort keys %{ $partial->{'subs'} }) {
             if (!$partials->{'stack_text'}{$key}) {
                 $partials->{'stack_text'}{$key} =
