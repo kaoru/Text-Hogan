@@ -502,11 +502,12 @@ sub twrite {
 
 sub walk {
     my ($nodelist, $context) = @_;
-    my $func;
-    for (my $i = 0, my $l = scalar(@$nodelist); $i < $l; $i++) {
-        $func = $codegen{$nodelist->[$i]{'tag'}};
-        $func && $func->($nodelist->[$i], $context);
+
+    for my $node (@$nodelist) {
+        my $func = $codegen{$node->{'tag'}} or next;
+        $func->($node, $context);
     }
+
     return $context;
 }
 
