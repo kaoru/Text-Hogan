@@ -353,8 +353,6 @@ sub find_in_scope {
 sub create_specialized_partial {
     my ($instance, $subs, $partials, $stack_subs, $stack_partials, $stack_text) = @_;
 
-    my $key;
-
     my $Partial = clone($instance);
     $Partial->{'buf'} = "";
 
@@ -367,7 +365,7 @@ sub create_specialized_partial {
             $stack_subs->{$key} = $subs->{$key};
         }
     }
-    for my $Key (sort keys %$stack_subs) {
+    for my $key (sort keys %$stack_subs) {
         $Partial->{'subs'}{$key} = $stack_subs->{$key};
     }
 
