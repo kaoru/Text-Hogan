@@ -68,10 +68,18 @@ as Text::Hogan with 'numeric_string_as_string' option enabled.) It supports
 passing objects with getters to the context hash, so that {{name}} can be
 rendered from $object->name if $object->can('name') returns true.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@balhatchet.net)
+Initial translation by Alex Balhatchet (alex@balhatchet.net)
+
+Further improvements from:
+
+Yanick Champoux
+Mohammad S Anwar
+Tony Finch
+Tom Hukins
+Ricky Morse
 
 =cut

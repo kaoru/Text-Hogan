@@ -681,10 +681,18 @@ Compiling long character string inputs with Text::Hogan used to be extremely
 slow but an optimisation added in version 2.00 has made the overhead much more
 manageable.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@balhatchet.net)
+Initial translation by Alex Balhatchet (alex@balhatchet.net)
+
+Further improvements from:
+
+Yanick Champoux
+Mohammad S Anwar
+Tony Finch
+Tom Hukins
+Ricky Morse
 
 =cut

@@ -383,10 +383,18 @@ Optionally takes a hashref of partials.
 
     say $template->render({ name => "Dino" }, { hello => "Hello, {{name}}!" });
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Started out statement-for-statement copied from hogan.js by Twitter!
 
-Alex Balhatchet (alex@balhatchet.net)
+Initial translation by Alex Balhatchet (alex@balhatchet.net)
+
+Further improvements from:
+
+Yanick Champoux
+Mohammad S Anwar
+Tony Finch
+Tom Hukins
+Ricky Morse
 
 =cut
