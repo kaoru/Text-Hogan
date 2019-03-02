@@ -689,10 +689,11 @@ Initial translation by Alex Balhatchet (alex@balhatchet.net)
 
 Further improvements from:
 
-Yanick Champoux
+Ed Freyfogle
 Mohammad S Anwar
-Tony Finch
-Tom Hukins
 Ricky Morse
+Tom Hukins
+Tony Finch
+Yanick Champoux
 
 =cut
