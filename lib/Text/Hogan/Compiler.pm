@@ -93,7 +93,7 @@ sub scan {
 
     my $change_delimiters = sub {
         my ($text_orig, $index) = @_;
-        my $text = join('' => @$text_orig);
+        my $text = join('', @$text_orig);
 
         my $close = '=' . $ctag;
         my $close_index = index($text, $close, $index);
@@ -303,7 +303,7 @@ sub stringify_substitutions {
         push @items, sprintf('"%s" => sub { my ($self,$c,$p,$t,$i) = @_; %s }', esc($key), $obj->{$key});
     }
 
-    return sprintf("{ %s }", join(", ", @items));
+    return sprintf("{ %s }", join(', ', @items));
 }
 
 sub stringify_partials {
@@ -318,7 +318,7 @@ sub stringify_partials {
     }
 
     return sprintf('"partials" => { %s }, "subs" => %s',
-        join(",", @partials),
+        join(',', @partials),
         stringify_substitutions($code_obj->{'subs'})
     );
 }
@@ -523,7 +523,7 @@ my %cache;
 
 sub cache_key {
     my ($text, $options) = @_;
-    return join("||", $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""), ($options->{'allow_whitespace_before_hashmark'} || 0));
+    return join('||', $text, !!$options->{'as_string'}, !!$options->{'numeric_string_as_string'}, !!$options->{'disable_lambda'}, ($options->{'delimiters'} || ""), ($options->{'allow_whitespace_before_hashmark'} || 0));
 }
 
 sub compile {

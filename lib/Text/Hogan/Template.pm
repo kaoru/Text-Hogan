@@ -45,7 +45,7 @@ sub v {
     my ($self, $str) = @_;
     $str //= "";
 
-    my $re = join '', '[', ( sort keys %mapping ), ']';
+    my $re = join('', '[', ( sort keys %mapping ), ']');
 
     $str =~ s/($re)/$mapping{$1}/ge;
 
