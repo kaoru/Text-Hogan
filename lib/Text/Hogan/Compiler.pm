@@ -670,15 +670,16 @@ As long as you are consistent with your use of encoding in your template
 variables and your context variables, everything should just work. You can use
 byte strings or character strings and you'll get what you expect.
 
-However be aware that compilation is much slower when using character strings!
-The tokenization does a lot of character-by-character operations using
-substr(), length(), etc. which are much slower when operating on character
-strings than byte strings.
+The only danger would be if you use byte strings of a multi-byte encoding and
+you happen to get a clash with your delimiters, eg. if your 4 byte kanji
+character happens to contain the ASCII '<' and '%' characters next to each
+other. I have no idea what the likelihood of that is, but hopefully if you're
+working with non-ASCII character sets you're also using Perl's unicode
+character strings features.
 
-I would still recommend you use character strings for your own sanity of
-course! Just be aware that you will gain a lot of performance by pre-compiling
-your templates, either using the as_string option of compile or just using a
-compile-once render-lots pattern in your code.
+Compiling long character string inputs with Text::Hogan used to be extremely
+slow but an optimisation added in version 2.00 has made the overhead much more
+manageable.
 
 =head1 AUTHOR
 
