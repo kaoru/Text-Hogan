@@ -6,6 +6,7 @@ use 5.10.0;
 use strict;
 use warnings;
 
+use Ref::Util qw( is_arrayref );
 use Text::Trim 'trim';
 
 my $r_is_whitespace = qr/\S/;
@@ -403,12 +404,10 @@ sub esc {
 
 sub char_at {
     my ($text, $index) = @_;
-    if (ref($text) eq 'ARRAY') {
+    if (is_arrayref($text)) {
         return $text->[$index];
     }
-    else {
-        return substr($text, $index, 1);
-    }
+    return substr($text, $index, 1);
 }
 
 sub choose_method {
