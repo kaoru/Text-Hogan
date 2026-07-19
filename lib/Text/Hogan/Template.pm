@@ -195,7 +195,7 @@ sub d {
 sub _check_for_num {
     my $self = shift;
     my $val = shift;
-    return $val if ($self->{'numeric_string_as_string'} == 1);
+    return $val if ($self->{'numeric_string_as_string'});
 
     $val += 0 if looks_like_number($val);
 
@@ -207,10 +207,9 @@ sub f {
     my ($self, $key, $ctx, $partials, $return_found) = @_;
     my ( $val, $found ) = ( 0 );
 
-    for my $v ( reverse @$ctx ) {
-        $val = find_in_scope($key, $v);
-
-        next unless defined $val;
+    for (my $j = $#$ctx; $j >= 0; $j--) {
+        my $v = $ctx->[$j];
+        next unless ref($v) eq 'HASH' && defined($val = $v->{$key});
 
         $found = 1;
         last;
@@ -249,8 +248,11 @@ sub ct {
 
 # template result buffering
 sub b {
-    my ($self, $s) = @_;
-    $self->{'buf'} .= $s;
+    # this is called so frequently that it makes sense to avoid the unpacking
+    $_[0]{'buf'} .= $_[1];
+    # instead of
+    # my ($self, $s) = @_;
+    # $self->{'buf'} .= $s;
 }
 
 sub fl {
