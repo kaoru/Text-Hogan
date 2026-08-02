@@ -348,9 +348,15 @@ sub generate {
     return $self->make_template($context, $text, $options);
 }
 
+sub fuse {
+    my ($c) = @_;
+    1 while $c =~ s/\);\$t->b\(/ . /g;
+    return $c;
+}
+
 sub wrap_main {
     my ($code) = @_;
-    return sprintf('$t->b($i = $i || ""); %s return $t->fl();', $code);
+    return fuse(sprintf('$t->b($i = $i || ""); %s return $t->fl();', $code));
 }
 
 sub make_template {
