@@ -1,5 +1,7 @@
 Revision history for perl module Text::Hogan
 
+2.07
+
 2.06 2026-08-13
     * Github Actions
     * add prereq of Text::Pod and Scalar::List::Utils to get Actions passing
